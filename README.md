@@ -43,7 +43,7 @@ Loved the performance but need more features for a full-scale game? **[GPU Anima
 | **Smooth Transitions** | ❌ | ✅ Smooth crossfading between animation states |
 | **Tick Rate Optimization** | ❌ | ✅ Reduce update frequency for distant units |
 
-👉 **[Get GPU Animation Entities PRO on the Asset Store](#https://assetstore.unity.com/packages/tools/animation/gpu-animation-entities-pro-370150)**
+👉 **[Get GPU Animation Entities PRO on the Asset Store](https://assetstore.unity.com/packages/tools/animation/gpu-animation-entities-pro-370150)**
 
 ## 🛠️ Technical Requirements
 
