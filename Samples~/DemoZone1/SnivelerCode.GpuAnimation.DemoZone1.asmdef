@@ -1,0 +1,24 @@
+{
+    "name": "SnivelerCode.GpuAnimation.DemoZone3",
+    "rootNamespace": "SnivelerCode.GpuAnimation.DemoZone3",
+    "references": [
+        "Unity.Entities",
+        "Unity.Collections",
+        "Unity.Mathematics",
+        "Unity.Burst",
+        "Unity.Entities.Hybrid",
+        "Unity.Transforms",
+        "Unity.Entities.Graphics",
+        "SnivelerCode.GpuAnimation.Runtime",
+        "SnivelerCode.GpuAnimation.Generated"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

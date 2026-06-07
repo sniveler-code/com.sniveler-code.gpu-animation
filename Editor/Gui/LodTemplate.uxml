@@ -1,0 +1,21 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement style="flex-grow: 0; width: 250px; padding-top: 3px; padding-right: 3px; padding-bottom: 3px; padding-left: 3px; margin-top: 3px; margin-right: 3px; margin-bottom: 3px; margin-left: 3px; border-left-color: rgb(88, 67, 67); border-right-color: rgb(88, 67, 67); border-top-color: rgb(88, 67, 67); border-bottom-color: rgb(88, 67, 67); border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px;">
+        <ui:Label tabindex="-1" text="Model LOD" parse-escape-sequences="true" display-tooltip-when-elided="true" class="unity-button" />
+        <ui:VisualElement style="flex-grow: 1; flex-direction: row; align-items: center;">
+            <ui:Label tabindex="-1" text="Transition" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="false" style="width: 100px; -unity-text-align: upper-right;" />
+            <ui:SliderInt picking-mode="Ignore" value="42" high-value="100" show-input-field="true" name="Percent" inverted="true" style="flex-grow: 1; width: 100px;" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; flex-direction: row; align-items: center;">
+            <ui:Label tabindex="-1" text="Quality" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="false" style="width: 100px; -unity-text-align: upper-right;" />
+            <ui:DropdownField choices="4 Bones, 2 Bones, 1 Bone" index="0" name="Quality" style="width: 100px; flex-grow: 1;" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; flex-direction: row; align-items: center;">
+            <ui:Label tabindex="-1" text="Interpolation" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="false" style="width: 100px; -unity-text-align: upper-right;" />
+            <ui:Toggle name="Interpolation" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; flex-direction: row; align-items: center;">
+            <ui:Label tabindex="-1" text="Shadows" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="false" style="width: 100px; -unity-text-align: upper-right;" />
+            <ui:Toggle name="Shadows" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

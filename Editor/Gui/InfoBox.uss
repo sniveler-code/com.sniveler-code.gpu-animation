@@ -1,0 +1,56 @@
+.info-box {
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 12px;
+    margin: 4px 0;
+    border-radius: 4px;
+    border-left-width: 4px;
+    background-color: rgb(43, 43, 43);
+}
+
+.info-box__icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+    flex-shrink: 0;
+    --unity-image: resource('console.infoicon');
+}
+
+.info-box__label {
+    color: rgb(210, 210, 210);
+    white-space: normal;
+    flex-grow: 1;
+    font-size: 12px;
+    flex-shrink: 1;
+}
+
+.info--info > .info-box {
+    border-color: rgb(33, 150, 243);
+    background-color: rgba(33, 150, 243, 0.1);
+}
+
+.info--info > .info-box .info-box__icon {
+    background-image: url("/Packages/com.sniveler-code.gpu-animation-pro/Editor/Regular/InfoboxInfoIcon.png");
+    -unity-background-image-tint-color: rgb(33, 150, 243);
+}
+
+.info--warning > .info-box {
+    border-color: rgb(255, 160, 0);
+    background-color: rgba(255, 160, 0, 0.1);
+}
+
+.info--warning > .info-box .info-box__icon {
+    --unity-image: resource('console.warnicon');
+    background-image: url("/Packages/com.sniveler-code.gpu-animation-pro/Editor/Regular/InfoboxWarningIcon.png");
+    -unity-background-image-tint-color: rgb(255, 160, 0);
+}
+
+.info--error > .info-box {
+    border-color: rgb(244, 67, 54);
+    background-color: rgba(244, 67, 54, 0.1);
+}
+
+.info--error > .info-box .info-box__icon {
+    background-image: url("/Packages/com.sniveler-code.gpu-animation-pro/Editor/Regular/InfoboxErrorIcon.png");
+    -unity-background-image-tint-color: rgb(244, 67, 54);
+}

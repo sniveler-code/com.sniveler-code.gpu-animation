@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement name="attachment-item-root" style="flex-direction: row; margin-bottom: 2px;">
+        <uie:ObjectField name="attachment-prefab-field" label="Attachment" type="UnityEngine.GameObject, UnityEngine.CoreModule" style="flex-grow: 1;" />
+        <ui:Button name="show-hide-button" text="show" style="width: 50px;" />
+        <ui:Button name="remove-button" text="-" style="width: 20px;" />
+    </ui:VisualElement>
+</ui:UXML>

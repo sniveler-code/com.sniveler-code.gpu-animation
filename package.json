@@ -1,0 +1,40 @@
+{
+  "name": "com.sniveler-code.gpu-animation",
+  "version": "1.0.0",
+  "displayName": "GPU Animation Entities",
+  "description": "",
+  "unity": "2022.2",
+  "unityRelease": "22f1",
+  "documentationUrl": "https://sniveler-code.gitbook.io/dots/gpu-animation-entities-pro",
+  "dependencies": {
+    "com.unity.entities": "1.4.5",
+    "com.unity.entities.graphics": "1.4.18",
+    "com.unity.burst": "1.8.27",
+    "com.unity.render-pipelines.universal": "14.0.9"
+  },
+  "samples": [
+    {
+      "displayName": "DemoZone1 (Massive Crowd)",
+      "description": "Stress test featuring spatial hashing, combat decision-making, and thousands of units.",
+      "path": "Samples~/DemoZone1"
+    }
+  ],
+  "keywords": [
+    "gpu",
+    "animation",
+    "instancing",
+    "entities",
+    "dots",
+    "ecs",
+    "lods",
+    "baking",
+    "shader graph",
+    "crowd",
+    "swarm"
+  ],
+  "author": {
+    "name": "sniveler.code",
+    "email": "sniveler.code@gmail.com",
+    "url": "https://github.com/sniveler-code"
+  }
+}

@@ -1,0 +1,97 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:Template name="InfoBox" src="project://database/Packages/com.sniveler-code.gpu-animation/Editor/Gui/InfoBox.uxml?fileID=9197481963319205126&amp;guid=b50232a285194d1aaa13d95cf53cfc76&amp;type=3#InfoBox" />
+    <ui:Template name="ModalWindow" src="project://database/Packages/com.sniveler-code.gpu-animation/Editor/Gui/ModalWindow.uxml?fileID=9197481963319205126&amp;guid=83490bbda385492c962683df7f1288c5&amp;type=3#ModalWindow" />
+    <Style src="project://database/Packages/com.sniveler-code.gpu-animation/Editor/Gui/ThemeVariables.uss?fileID=7433441132597879392&amp;guid=bea425297571daf4786836e8e6eb0088&amp;type=3#ThemeVariables" />
+    <Style src="project://database/Packages/com.sniveler-code.gpu-animation/Editor/Gui/GenerateWindow.uss?fileID=7433441132597879392&amp;guid=389d5f8434d413240ba0f5ea94ed7679&amp;type=3#GenerateWindow" />
+    <ui:VisualElement class="root-container" style="padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px; justify-content: flex-start; flex-shrink: 0;">
+        <ui:VisualElement class="flex-row-layout margin-all-2" style="margin-top: 10px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px; align-items: center; flex-grow: 0; flex-direction: column;">
+            <ui:VisualElement style="flex-grow: 1; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; border-left-color: rgb(186, 161, 161); border-right-color: rgb(186, 161, 161); border-top-color: rgb(186, 161, 161); border-bottom-color: rgb(186, 161, 161); padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px; margin-bottom: 5px; flex-direction: row;">
+                <ui:VisualElement style="flex-grow: 0; width: 24px; height: 24px; margin-right: 3px; background-image: url(&quot;project://database/Packages/com.sniveler-code.gpu-animation/Editor/Regular/_animator_prefab.png?fileID=2800000&amp;guid=a62317e1dcb454cc3bfd794a918c5634&amp;type=3#_animator_prefab&quot;); margin-left: 0; justify-content: center; flex-shrink: 0;" />
+                <ui:Label tabindex="-1" text="Prefab Model:" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-text-align: middle-right; margin-left: 5px; margin-right: 5px;" />
+                <uie:ObjectField type="UnityEngine.GameObject, UnityEngine.CoreModule" allow-scene-objects="false" name="PrefabField" class="prefab-field-main" style="flex-shrink: 1; align-items: center;">
+                    <ui:Label name="ErrorMessage" class="error-message-label" />
+                </uie:ObjectField>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement class="tab-view-root" style="flex-grow: 1;">
+            <ui:VisualElement class="tabs-container" style="flex-direction: row; justify-content: center;">
+                <ui:Label tabindex="-1" text="Animator" parse-escape-sequences="true" display-tooltip-when-elided="true" class="tab-button tab-button--active" />
+                <ui:Label tabindex="-1" text="Lods" parse-escape-sequences="true" display-tooltip-when-elided="true" class="tab-button" style="width: 100px;" />
+                <ui:Label tabindex="-1" text="Bones" parse-escape-sequences="true" display-tooltip-when-elided="true" class="tab-button" style="width: 100px;" />
+            </ui:VisualElement>
+            <ui:VisualElement class="content-container" style="flex-grow: 1;">
+                <ui:VisualElement name="Animator" class="tab-page tab-page--active" style="flex-grow: 1;">
+                    <ui:VisualElement style="flex-grow: 1; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; border-left-color: rgb(186, 161, 161); border-right-color: rgb(186, 161, 161); border-top-color: rgb(186, 161, 161); border-bottom-color: rgb(186, 161, 161); padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px; margin-bottom: 5px;">
+                        <ui:VisualElement class="flex-row-layout content-indent" style="align-self: flex-end; flex-grow: 0; align-items: center; flex-direction: row; margin-top: 3px;">
+                            <ui:VisualElement style="flex-grow: 0; width: 24px; height: 24px; background-image: url(&quot;project://database/Packages/com.sniveler-code.gpu-animation/Editor/Regular/_animator_animator.png?fileID=2800000&amp;guid=c919352a844f34fb585f19518d49c356&amp;type=3#_animator_animator&quot;); flex-shrink: 0;" />
+                            <uie:ObjectField type="UnityEditor.Animations.AnimatorController, UnityEditor.CoreModule" name="AnimatorField" allow-scene-objects="false" style="flex-shrink: 1; flex-grow: 1;" />
+                        </ui:VisualElement>
+                        <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+                            <ui:VisualElement style="flex-grow: 0; margin-bottom: 5px;">
+                                <ui:VisualElement style="flex-direction: row; margin-top: 5px; justify-content: flex-start; align-items: center; margin-right: 5px; flex-grow: 0; margin-left: 5px;">
+                                    <ui:VisualElement style="flex-grow: 0; background-image: url(&quot;project://database/Packages/com.sniveler-code.gpu-animation/Editor/Regular/_animator_dq.png?fileID=2800000&amp;guid=f7a8c104b0ef043a088f643db12fe431&amp;type=3#_animator_dq&quot;); -unity-background-scale-mode: stretch-to-fill; width: 24px; height: 24px; margin-right: 5px;" />
+                                    <ui:Label tabindex="-1" text="Use Dual Quaternion" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="false" tooltip="Pro Version Require" style="width: 150px;" />
+                                    <ui:Toggle name="UseDqs" tooltip="Pro Version Require" style="flex-direction: row;" />
+                                </ui:VisualElement>
+                                <ui:VisualElement style="flex-direction: row; flex-grow: 0; margin-top: 5px; justify-content: flex-start; align-items: center; margin-right: 5px; margin-left: 5px;">
+                                    <ui:VisualElement name="VisualElement" style="flex-grow: 0; background-image: url(&quot;project://database/Packages/com.sniveler-code.gpu-animation/Editor/Regular/_animator_rm.png?fileID=2800000&amp;guid=d934fb6fc63ab4425bcba71bbc5829d9&amp;type=3#_animator_rm&quot;); -unity-background-scale-mode: stretch-to-fill; width: 24px; height: 24px; margin-right: 5px;" />
+                                    <ui:Label tabindex="-1" text="Apply Root Motion" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="false" tooltip="Pro Version Require" style="width: 150px;" />
+                                    <ui:Toggle name="RootMotion" tooltip="Pro Version Require" style="flex-direction: row;" />
+                                </ui:VisualElement>
+                            </ui:VisualElement>
+                            <ui:VisualElement name="AnimationsContainer" style="flex-grow: 1;" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="Lods" class="tab-page" style="flex-grow: 1;">
+                    <ui:VisualElement name="LodsContainer" style="flex-grow: 1; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; border-left-color: rgb(186, 161, 161); border-right-color: rgb(186, 161, 161); border-top-color: rgb(186, 161, 161); border-bottom-color: rgb(186, 161, 161); padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px; margin-bottom: 5px;">
+                        <ui:VisualElement name="Content" style="flex-grow: 0; flex-wrap: wrap; margin-top: 3px; margin-bottom: 3px; justify-content: center;">
+                            <ui:VisualElement style="flex-grow: 0; justify-content: center; margin-top: 3px; margin-right: 3px; margin-bottom: 3px; margin-left: 3px; -unity-text-align: upper-right;">
+                                <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+                                    <ui:Label tabindex="-1" text="Shader" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-text-align: middle-right; width: 100px; padding-right: 5px;" />
+                                    <ui:DropdownField choices="Sniveler Lit, Sniveler Unlit" index="0" name="ShaderType" style="align-items: center; -unity-text-align: middle-right; flex-shrink: 1; flex-grow: 1;" />
+                                </ui:VisualElement>
+                                <ui:VisualElement name="CustomShaderContainer" style="flex-grow: 1; flex-direction: row; display: none;">
+                                    <ui:Label tabindex="-1" text="Custom" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-text-align: middle-right; width: 100px; padding-right: 5px;" />
+                                    <uie:ObjectField name="ShaderField" style="display: flex; flex-grow: 1;" />
+                                </ui:VisualElement>
+                                <ui:Label tabindex="-1" text="Warning: No shader selected. The generated asset may not render correctly." parse-escape-sequences="true" display-tooltip-when-elided="true" name="ShaderMessage" style="color: rgb(242, 0, 0); text-shadow: 0 0 2px rgba(53, 7, 7, 0.63); -unity-text-align: upper-right; display: none; margin-top: 3px;" />
+                            </ui:VisualElement>
+                            <ui:Instance template="InfoBox" class="info--info">
+                                <AttributeOverrides element-name="InfoText" text="Add an LOD Group to the source Prefab to manage multiple LOD levels." />
+                            </ui:Instance>
+                            <ui:VisualElement name="LodsContent" style="flex-grow: 1; flex-direction: row; flex-wrap: wrap;" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="Warning" style="flex-grow: 1;">
+                            <ui:Instance template="InfoBox" class="info--warning">
+                                <AttributeOverrides element-name="InfoText" text="Select a prefab to set up LOD settings" />
+                            </ui:Instance>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="Bones" class="tab-page" style="flex-grow: 1;">
+                    <ui:VisualElement name="BonesContainer" style="flex-grow: 1; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; border-left-color: rgb(186, 161, 161); border-right-color: rgb(186, 161, 161); border-top-color: rgb(186, 161, 161); border-bottom-color: rgb(186, 161, 161); padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px; margin-bottom: 5px;">
+                        <ui:VisualElement name="Content" style="margin-top: 3px; margin-bottom: 3px; justify-content: center;">
+                            <ui:Instance template="InfoBox" name="Instance" class="info--warning">
+                                <AttributeOverrides element-name="InfoText" text="Pro Verison Require" />
+                            </ui:Instance>
+                            <ui:VisualElement name="BonesContent" class="content-indent" style="flex-direction: column; margin-top: 3px; margin-bottom: 3px;" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="Warning" style="flex-grow: 1;">
+                            <ui:Instance template="InfoBox" class="info--warning">
+                                <AttributeOverrides element-name="InfoText" text="Pro Version Require" />
+                            </ui:Instance>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="MessageContainer" style="flex-grow: 0; flex-shrink: 0;" />
+        <ui:VisualElement style="flex-grow: 0; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px;">
+            <ui:Button text="Process" name="Generate" class="bake-button" style="align-items: center; align-self: stretch; justify-content: center;">
+                <ui:VisualElement name="VisualElement" class="bake-button__icon" />
+            </ui:Button>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:Instance template="ModalWindow" name="ModalInstance" class="modal-wrapper" style="top: 1px; right: 0; left: 0; bottom: 0; display: none;" />
+</ui:UXML>

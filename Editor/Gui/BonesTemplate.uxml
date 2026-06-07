@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement style="flex-grow: 1; flex-direction: row; justify-content: flex-end; flex-shrink: 0; align-items: center; margin-right: 5px; margin-top: 2px; margin-bottom: 2px;">
+        <ui:Button text="-" display-tooltip-when-elided="true" name="Remove" />
+        <ui:DropdownField index="-1" choices="System.Collections.Generic.List`1[System.String]" name="BoneList" style="width: 250px;" />
+        <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="BoneTitle" style="width: 100px; -unity-text-align: middle-right; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" />
+    </ui:VisualElement>
+</ui:UXML>

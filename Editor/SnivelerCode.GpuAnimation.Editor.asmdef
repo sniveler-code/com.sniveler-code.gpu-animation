@@ -1,0 +1,22 @@
+{
+    "name": "SnivelerCode.GpuAnimation.Editor",
+    "rootNamespace": "SnivelerCode.GpuAnimation.Editor",
+    "references": [
+        "Unity.Mathematics",
+        "SnivelerCode.GpuAnimation.Runtime",
+        "Unity.Scenes",
+        "Unity.Entities",
+        "Unity.Collections"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

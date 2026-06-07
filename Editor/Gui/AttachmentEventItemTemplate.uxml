@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement name="event-item-root" style="flex-direction: row; background-color: rgba(0, 0, 0, 0); margin-bottom: 1px; align-items: center; padding-top: 2px; padding-right: 2px; padding-bottom: 2px; padding-left: 2px;">
+        <ui:RadioButton />
+        <ui:VisualElement style="flex-grow: 1;" />
+        <ui:Label name="anim-label" text="anim: " style="width: 200px; -unity-text-align: upper-right; padding-right: 5px; color: rgb(88, 122, 84);" />
+        <ui:Label name="frame-label" text="frame: " style="width: 60px;" />
+        <ui:Label name="bone-label" text="bone: " style="width: 250px; color: rgb(88, 122, 84);" />
+        <ui:Button name="remove-event-button" text="-" style="width: 20px;" />
+    </ui:VisualElement>
+</ui:UXML>

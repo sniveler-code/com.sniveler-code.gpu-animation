@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="InfoBox.uss" />
+    <ui:VisualElement name="InfoBox" class="info-box info-box--info">
+        <ui:VisualElement class="info-box__icon" />
+        <ui:Label name="InfoText" text="Select a prefab containing an LOD Group component to modify its Level of Detail configurations." class="info-box__label" />
+    </ui:VisualElement>
+</ui:UXML>

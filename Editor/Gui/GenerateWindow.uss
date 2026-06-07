@@ -1,0 +1,254 @@
+.root-container {
+    flex-grow: 1;
+    background-color: var(--bg-transparent);
+    flex-direction: column;
+    height: auto;
+    align-items: stretch;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.flex-row-layout {
+    flex-grow: 1;
+    background-color: var(--bg-transparent);
+    flex-direction: row;
+}
+
+.margin-all-2 {
+    margin: 2px;
+}
+
+.margin-right-5 {
+    margin-right: 5px;
+}
+
+.prefab-field-main {
+    flex-grow: 1;
+    flex-direction: row-reverse;
+}
+
+.error-message-label {
+    color: var(--error-color);
+    position: absolute;
+    height: 100%;
+    margin-right: 20px;
+    -unity-text-align: middle-left;
+}
+
+.params-container {
+    flex-grow: 1;
+    margin-left: 20px;
+}
+
+.section-header-label {
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding-left: 5px;
+    font-size: 12px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-right;
+    color: var(--header-text-color);
+    background-image: url("project://database/Packages/com.unity.timeline/Editor/StyleSheets/Images/Shared/TimelineSeqEnd.png?fileID=2800000&guid=5dfe66e61e0d270468ae75349ff3a3eb&type=3#TimelineSeqEnd");
+    -unity-background-image-tint-color: var(--header-tint);
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.content-indent {
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.animator-baker-lod .unity-toggle__input {
+    flex-grow: 0;
+}
+
+.animator-baker-lod .unity-popup-field__label {
+    -unity-text-align: middle-right;
+    padding: 0 5 0 0;
+}
+
+.animator-baker-lod .unity-toggle__label {
+    -unity-text-align: middle-right;
+    padding: 0 5 0 0;
+}
+
+.animator-baker-lod-header {
+    -unity-text-align: middle-center;
+    margin-bottom: 3px;
+    margin-top: 5px;
+    flex-direction: row;
+}
+
+.animator-baker-lod-header > .column {
+    margin-left: 1px;
+    margin-right: 1px;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 0;
+}
+
+.animator-baker-lod-header > .transition {
+    width: 200px;
+}
+
+.animator-baker-lod-header > .mesh {
+    width: 200px;
+}
+
+.animator-baker-lod-header > .quality {
+    width: 50px;
+}
+
+.animator-baker-lod-header > .interpolation {
+    width: 90px;
+}
+
+.animator-baker-lod-header > .shadows {
+    width: 80px;
+}
+
+.animator-baker-lod-header > .remove {
+    width: 20px;
+}
+
+.unity-label.column {
+    font-size: 10px;
+}
+
+.tab-view-root {
+    flex-grow: 1;
+    background-color: rgb(40, 40, 40);
+    border-color: rgb(26, 26, 26);
+    border-width: 1px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.tab-button {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
+    margin: 0;
+    background-color: transparent;
+    border-width: 0;
+    border-bottom-width: 2px;
+    border-bottom-color: transparent;
+    color: rgb(165, 165, 165);
+    -unity-text-align: middle-center;
+    transition-property: background-color, color;
+    transition-duration: 0.25s;
+    transition-timing-function: ease-in-out;
+    width: 100px;
+}
+
+.tab-button:hover {
+    background-color: rgb(42, 42, 42);
+    color: rgb(210, 210, 210);
+}
+
+.tab-button--active {
+    background-color: rgb(56, 56, 56);
+    color: rgb(255, 255, 255);
+    border-bottom-color: rgb(74, 144, 226);
+    border-bottom-width: 2.1px;
+}
+
+.tab-button--active:hover {
+    background-color: rgb(56, 56, 56);
+    border-bottom-color: rgb(74, 144, 226);
+    border-bottom-width: 2.1px;
+}
+
+.content-container {
+    flex-grow: 1;
+    background-color: rgb(56, 56, 56);
+    padding: 12px;
+}
+
+.tab-page {
+    flex-grow: 1;
+    display: none;
+}
+
+.tab-page--active {
+    display: flex;
+}
+
+.modal-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+#LodsContainer > #Content {
+    display: none;
+}
+
+#LodsContainer > #Warning {
+    display: flex;
+}
+
+#LodsContainer.active > #Content {
+    display: flex;
+}
+
+#LodsContainer.active > #Warning {
+    display: none;
+}
+
+#BonesContainer > #Content {
+    display: none;
+}
+
+#BonesContainer > #Warning {
+    display: flex;
+}
+
+#BonesContainer.active > #Content {
+    display: flex;
+}
+
+#BonesContainer.active > #Warning {
+    display: none;
+}
+
+.bake-button {
+    height: 32px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    background-color: #355E3B;
+    border-color: #1a1a1a;
+    border-width: 1px;
+    border-radius: 4px;
+
+    color: #E4E4E4;
+    -unity-font-style: bold;
+    font-size: 13px;
+
+    transition-property: background-color, scale;
+    transition-duration: 0.1s;
+}
+
+.bake-button:hover {
+    background-color: #457B4D;
+    scale: 1.02;
+}
+
+.bake-button:active {
+    background-color: #2D4C32;
+    scale: 0.98;
+}
+
+.bake-button__icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 80px;
+    background-image: url("/Packages/com.sniveler-code.gpu-animation-pro/Editor/Regular/Settings.png");
+}

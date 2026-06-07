@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement name="RootElement" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); flex-direction: row; margin-top: 0; height: 26px; align-items: stretch; justify-content: flex-end; align-self: stretch; flex-shrink: 0; margin-bottom: 0; background-image: none; -unity-background-scale-mode: scale-and-crop; -unity-background-image-tint-color: rgb(86, 85, 125); padding-left: 5px; padding-right: 5px; padding-top: 3px; padding-bottom: 3px;">
+        <ui:Label tabindex="-1" text="Label" display-tooltip-when-elided="true" name="ClipName" style="width: auto; -unity-text-align: middle-right; margin-left: 0; margin-right: 10px;" />
+        <ui:SliderInt picking-mode="Ignore" value="15" high-value="60" name="ClipFps" low-value="30" show-input-field="true" inverted="false" style="width: 120px; color: rgb(255, 255, 255);" />
+        <ui:Label tabindex="-1" text="FPS" display-tooltip-when-elided="true" style="-unity-text-align: middle-left; height: 100%; margin-left: 5px; margin-right: 5px;" />
+        <ui:VisualElement style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); flex-shrink: 0; width: 16px; height: 16px; margin-top: 3px; background-image: url(&quot;project://database/Packages/com.unity.entities/Editor%20Default%20Resources/icons/dark/SystemEnabled/SystemEnabled.png?fileID=2800000&amp;guid=397c710623c6cda47bf80289a5835c57&amp;type=3#SystemEnabled&quot;);" />
+    </ui:VisualElement>
+</ui:UXML>

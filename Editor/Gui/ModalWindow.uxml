@@ -1,0 +1,13 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="ModalWindow.uss" />
+    <ui:VisualElement name="ModalOverlay" class="modal-overlay">
+        <ui:VisualElement class="modal-content">
+            <ui:Label text="Confirmation" name="ModalTitle" class="modal-header" style="-unity-text-align: upper-center;" />
+            <ui:Label text="Are you sure you want to proceed?" name="ModalText" class="modal-body-text" style="-unity-text-align: upper-center;" />
+            <ui:VisualElement class="modal-footer" style="flex-direction: row; margin-top: 5px;">
+                <ui:Button text="Cancel" name="CancelBtn" class="modal-button modal-button--cancel" style="flex-grow: 1;" />
+                <ui:Button text="Confirm" name="ConfirmBtn" class="modal-button modal-button--confirm" style="flex-grow: 1;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,27 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Samples/DemoZone3/Settings/DemoZone3.uss?fileID=7433441132597879392&amp;guid=99328e73f1ef47e47a41e52a1655b501&amp;type=3#DemoZone3" />
+    <ui:VisualElement picking-mode="Ignore" style="flex-grow: 1; flex-direction: column; justify-content: flex-start; align-items: auto;">
+        <ui:VisualElement picking-mode="Ignore" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0.38); border-radius: 5px; margin: 10px; padding: 10px; border-width: 1px; border-color: rgba(255, 255, 255, 0.17); justify-content: flex-start; height: 60px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; width: 100%;">
+            <ui:VisualElement class="bottom-panel" style="flex-grow: 1; justify-content: center; flex-direction: row; padding-top: 3px; padding-right: 3px; padding-bottom: 3px; padding-left: 3px; align-items: center;">
+                <ui:VisualElement style="flex-grow: 0; flex-direction: column; align-items: flex-end;">
+                    <ui:VisualElement style="flex-grow: 0; flex-direction: row; align-items: center;">
+                        <ui:Label tabindex="-1" text="Warriors:" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="false" style="width: 80px; -unity-text-align: middle-right;" />
+                        <ui:Label tabindex="-1" text="100" parse-escape-sequences="true" display-tooltip-when-elided="true" name="redWarriorsCount" style="width: 50px; -unity-text-align: middle-left;" />
+                        <ui:Button text="Spawn" parse-escape-sequences="true" display-tooltip-when-elided="true" name="redWarriors" class="my-custom-button" style="width: 150px; height: 40px; -unity-text-align: middle-center;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="VisualElement" style="flex-grow: 1; justify-content: space-around; flex-direction: column; flex-shrink: 0; height: 50px;">
+                    <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="StatsFps" enable-rich-text="false" style="-unity-text-align: middle-center; width: auto;" />
+                    <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="StatsGc" enable-rich-text="false" style="-unity-text-align: middle-center; width: auto;" />
+                </ui:VisualElement>
+                <ui:VisualElement style="-unity-text-align: middle-center; flex-grow: 1;">
+                    <ui:VisualElement style="flex-grow: 0; align-items: center; justify-content: flex-end; flex-direction: row; height: 50px; align-self: stretch; margin-right: 10px;">
+                        <ui:Label tabindex="-1" text="Warriors:" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="false" style="-unity-text-align: upper-right; width: 80px;" />
+                        <ui:Label tabindex="-1" text="100" parse-escape-sequences="true" display-tooltip-when-elided="true" name="blueWarriorsCount" style="width: 50px; -unity-text-align: upper-left;" />
+                        <ui:Button text="Spawn" parse-escape-sequences="true" display-tooltip-when-elided="true" name="blueWarriors" class="my-custom-button" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; width: 150px; justify-content: flex-start; height: 40px; -unity-text-align: middle-center;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

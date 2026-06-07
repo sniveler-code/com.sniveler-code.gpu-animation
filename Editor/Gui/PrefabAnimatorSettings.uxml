@@ -1,0 +1,19 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement name="root" style="padding: 10px;">
+        <ui:Label text="Prefab Animation Settings" style="-unity-font-style: bold; font-size: 14px; margin-bottom: 10px;" />
+        <ui:GroupBox name="preview-settings" text="Preview Settings" style="margin-bottom: 10px; border-width: 1px; border-color: gray; padding: 5px;">
+            <ui:VisualElement name="animation-container" />
+            <ui:SliderInt name="frame-slider" label="Frame" low-value="0" high-value="100" show-input-field="true" />
+        </ui:GroupBox>
+        <ui:GroupBox name="attachments-section" text="Attachments" style="margin-bottom: 10px; border-width: 1px; border-color: gray; padding: 5px;">
+            <ui:ScrollView name="attachments-list" style="max-height: 400px;" />
+            <ui:Button name="add-attachment-btn" text="Add Attachment" style="margin-top: 5px;" />
+        </ui:GroupBox>
+        <ui:VisualElement name="active-attachment-details" style="display: none; border-width: 1px; border-color: gray; padding: 5px;">
+            <ui:Label text="Attachment Details" style="-unity-font-style: bold; margin-bottom: 5px;" />
+            <ui:VisualElement name="default-state-container" />
+            <ui:VisualElement name="events-container" />
+            <ui:VisualElement name="add-event-container" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

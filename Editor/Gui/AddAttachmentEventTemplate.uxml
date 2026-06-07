@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement name="add-event-root" style="flex-direction: row; margin-top: 5px; justify-content: flex-end;">
+        <ui:Label name="current-frame-label" text="Frame: " style="width: 80px;" />
+        <ui:VisualElement name="bone-popup-container" style="width: 200px;" />
+        <ui:Button name="add-event-button" text="Add Event" style="width: 100px;" />
+    </ui:VisualElement>
+    <ui:VisualElement style="flex-direction: row; justify-content: center; margin-top: 3px; margin-right: 3px; margin-bottom: 3px; margin-left: 3px;">
+        <ui:Button text="Copy Transform" parse-escape-sequences="true" display-tooltip-when-elided="true" name="copy-matrix" />
+        <ui:Button text="Paste Transform" parse-escape-sequences="true" display-tooltip-when-elided="true" name="paste-matrix" />
+    </ui:VisualElement>
+</ui:UXML>
