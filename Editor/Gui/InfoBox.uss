@@ -29,8 +29,9 @@
     background-color: rgba(33, 150, 243, 0.1);
 }
 
+
 .info--info > .info-box .info-box__icon {
-    background-image: url("/Packages/com.sniveler-code.gpu-animation-pro/Editor/Regular/InfoboxInfoIcon.png");
+    background-image: url("/Packages/com.sniveler-code.gpu-animation/Editor/Regular/_animator_info_info.png");
     -unity-background-image-tint-color: rgb(33, 150, 243);
 }
 
@@ -41,7 +42,7 @@
 
 .info--warning > .info-box .info-box__icon {
     --unity-image: resource('console.warnicon');
-    background-image: url("/Packages/com.sniveler-code.gpu-animation-pro/Editor/Regular/InfoboxWarningIcon.png");
+    background-image: url("/Packages/com.sniveler-code.gpu-animation/Editor/Regular/_animator_info_warning.png");
     -unity-background-image-tint-color: rgb(255, 160, 0);
 }
 
@@ -51,6 +52,6 @@
 }
 
 .info--error > .info-box .info-box__icon {
-    background-image: url("/Packages/com.sniveler-code.gpu-animation-pro/Editor/Regular/InfoboxErrorIcon.png");
+    background-image: url("/Packages/com.sniveler-code.gpu-animation/Editor/Regular/_animator_info_error.png");
     -unity-background-image-tint-color: rgb(244, 67, 54);
 }

@@ -64,12 +64,12 @@
 
 .animator-baker-lod .unity-popup-field__label {
     -unity-text-align: middle-right;
-    padding: 0 5 0 0;
+    padding: 0 5px 0 0;
 }
 
 .animator-baker-lod .unity-toggle__label {
     -unity-text-align: middle-right;
-    padding: 0 5 0 0;
+    padding: 0 5px 0 0;
 }
 
 .animator-baker-lod-header {
@@ -181,7 +181,6 @@
     left: 0;
     right: 0;
     bottom: 0;
-    pointer-events: none;
 }
 
 #LodsContainer > #Content {
@@ -250,5 +249,5 @@
     width: 16px;
     height: 16px;
     margin-right: 80px;
-    background-image: url("/Packages/com.sniveler-code.gpu-animation-pro/Editor/Regular/Settings.png");
+    background-image: url("/Packages/com.sniveler-code.gpu-animation/Editor/Regular/_animator_settings.png");
 }
