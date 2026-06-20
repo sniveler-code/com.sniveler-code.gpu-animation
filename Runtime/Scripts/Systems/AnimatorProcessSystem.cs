@@ -138,13 +138,11 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
                         @params[condition.Parameter] = paramData;
                     }
 
-                    var random = Random.CreateFromIndex((uint)entity.Index);
-
                     anim.Index = transition.Index;
                     anim.Frame = 0;
                     anim.PrevFrame = 0;
                     animA = ref blobAnimator.Animations[anim.Index];
-                    anim.Time = animA.Loop ? random.NextFloat(0f, animA.Frames / fpsA) : 0f;
+                    anim.Time = 0f;
                     return;
                 }
             }

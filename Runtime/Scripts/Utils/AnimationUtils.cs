@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using SnivelerCode.GpuAnimation.Runtime.Components;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -8,6 +9,8 @@ namespace SnivelerCode.GpuAnimation.Runtime.Utils
 {
     public static class AnimationUtils
     {
+        public static GraphicsBuffer DummyBuffer { get; private set; }
+
         public static int PropertyAnimBufferLbs => Shader.PropertyToID("_SnivelerAnimBufferLBS");
 
         public static float3x4 Compress(this Matrix4x4 matrix)
@@ -17,6 +20,25 @@ namespace SnivelerCode.GpuAnimation.Runtime.Utils
                 matrix.m10, matrix.m11, matrix.m12, matrix.m13,
                 matrix.m20, matrix.m21, matrix.m22, matrix.m23
             );
+        }
+
+        public static void InitDummyBuffer()
+        {
+            if (DummyBuffer != null && DummyBuffer.IsValid()) return;
+
+            ReleaseDummyBuffer();
+            var dummyBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, 1, 48);
+            dummyBuffer.SetData(new List<float3x4> {float3x4.zero});
+            Shader.SetGlobalBuffer(PropertyAnimBufferLbs, dummyBuffer);
+            DummyBuffer = dummyBuffer;
+        }
+
+        public static void ReleaseDummyBuffer()
+        {
+            if (DummyBuffer == null) return;
+            Shader.SetGlobalBuffer(PropertyAnimBufferLbs, (GraphicsBuffer) null);
+            if (DummyBuffer.IsValid()) DummyBuffer.Dispose();
+            DummyBuffer = null;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

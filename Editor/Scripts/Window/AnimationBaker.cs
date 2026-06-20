@@ -10,6 +10,7 @@ using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Animations;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.Playables;
 using Object = UnityEngine.Object;
 
@@ -79,8 +80,12 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
             if (extractedAvatar == null) throw new Exception("Avatar not found in the mesh asset.");
 
             animatorComponent.avatar = extractedAvatar;
-            animatorComponent.runtimeAnimatorController = instance.Animator;
             animatorComponent.applyRootMotion = false;
+            animatorComponent.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+
+            var tempController = new AnimatorController();
+            tempController.AddLayer("Base Layer");
+            animatorComponent.runtimeAnimatorController = tempController;
 
             Transform[] clonedMasterBones = new Transform[instance.MasterBones.Length];
             Transform[] allClonedTransforms = clonedPrefab.GetComponentsInChildren<Transform>();
@@ -112,19 +117,36 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
 
                 clonedPrefab.transform.position = Vector3.zero;
                 clonedPrefab.transform.rotation = Quaternion.identity;
+
+                animatorComponent.runtimeAnimatorController = null;
                 animatorComponent.applyRootMotion = false;
                 animatorComponent.cullingMode = AnimatorCullingMode.AlwaysAnimate;
 
-                PlayableGraph graph = PlayableGraph.Create();
+                PlayableGraph graph = PlayableGraph.Create("BakeGraph");
                 graph.SetTimeUpdateMode(DirectorUpdateMode.Manual);
-                var playableOutput = AnimationPlayableOutput.Create(graph, "Animation", animatorComponent);
-                var clipPlayable = AnimationClipPlayable.Create(graph, animationClip);
-                playableOutput.SetSourcePlayable(clipPlayable);
 
+                var output = AnimationPlayableOutput.Create(graph, "Animation", animatorComponent);
+                var clipPlayable = AnimationClipPlayable.Create(graph, animationClip);
+                clipPlayable.Pause();
+                Playable finalPlayable = clipPlayable;
+                var rigBuilder = clonedPrefab.GetComponent<RigBuilder>();
+
+                if (rigBuilder != null && rigBuilder.enabled)
+                {
+                    rigBuilder.StartPreview();
+                    finalPlayable = rigBuilder.BuildPreviewGraph(graph, clipPlayable);
+                }
+
+                output.SetSourcePlayable(finalPlayable);
                 graph.Play();
+
                 for (int frame = 0; frame < frameCount; frame++)
                 {
+                    float time = frame * (1f / clip.Fps);
                     float dt = frame == 0 ? 0f : 1f / clip.Fps;
+                    clipPlayable.SetTime(time);
+
+                    if (rigBuilder != null && rigBuilder.enabled) rigBuilder.UpdatePreviewGraph(graph);
                     graph.Evaluate(dt);
 
                     foreach (var r in clonedRenderers) result.MaxBounds.Encapsulate(r.localBounds);
@@ -146,6 +168,8 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
 
                     SceneView.RepaintAll();
                 }
+
+                if (rigBuilder != null && rigBuilder.enabled) rigBuilder.StopPreview();
 
                 if (graph.IsValid()) graph.Destroy();
                 result.Animations.Add(materialAnimation);

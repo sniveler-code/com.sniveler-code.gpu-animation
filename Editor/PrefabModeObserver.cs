@@ -1,4 +1,5 @@
-﻿using SnivelerCode.GpuAnimation.Runtime.Authoring;
+﻿using System;
+using SnivelerCode.GpuAnimation.Runtime.Authoring;
 using SnivelerCode.GpuAnimation.Runtime.Utils;
 using Unity.Collections;
 using Unity.Mathematics;
@@ -11,14 +12,14 @@ namespace SnivelerCode.GpuAnimation.Editor
     [InitializeOnLoad]
     public static class PrefabModeObserver
     {
-        private static bool _wasDirty;
-        private static GraphicsBuffer _gpuBufferDqs;
         private static GraphicsBuffer _gpuBufferLbs;
 
         static PrefabModeObserver()
         {
+            AnimationUtils.InitDummyBuffer();
             PrefabStage.prefabStageOpened += OnPrefabStageOpened;
             PrefabStage.prefabStageClosing += OnPrefabStageClosing;
+            AppDomain.CurrentDomain.DomainUnload += OnDomainUnload;
         }
 
         private static void OnPrefabStageOpened(PrefabStage prefabStage)
@@ -41,14 +42,32 @@ namespace SnivelerCode.GpuAnimation.Editor
                 _gpuBufferLbs.SetData(tempArrayLbs);
                 tempArrayLbs.Dispose();
 
+                if (_gpuBufferLbs == null || !_gpuBufferLbs.IsValid()) return;
                 Shader.SetGlobalBuffer(AnimationUtils.PropertyAnimBufferLbs, _gpuBufferLbs);
             }
         }
 
+        private static void OnDomainUnload(object sender, EventArgs e) => Cleanup();
+
         private static void OnPrefabStageClosing(PrefabStage prefabStage)
         {
-            _gpuBufferDqs?.Dispose();
-            _gpuBufferLbs?.Dispose();
+            Shader.SetGlobalBuffer(AnimationUtils.PropertyAnimBufferLbs, AnimationUtils.DummyBuffer);
+            if (_gpuBufferLbs != null)
+            {
+                _gpuBufferLbs.Dispose();
+                _gpuBufferLbs = null;
+            }
+        }
+
+        private static void Cleanup()
+        {
+            if (_gpuBufferLbs != null)
+            {
+                if (_gpuBufferLbs.IsValid()) _gpuBufferLbs.Dispose();
+                _gpuBufferLbs = null;
+            }
+
+            AnimationUtils.ReleaseDummyBuffer();
         }
     }
 }

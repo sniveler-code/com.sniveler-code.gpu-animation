@@ -10,7 +10,6 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
     [UpdateInGroup(typeof(InitializationSystemGroup))]
     public sealed partial class AnimatorInitializationSystem : SystemBase
     {
-        private GraphicsBuffer _gpuBufferDqs;
         private GraphicsBuffer _gpuBufferLbs;
 
         protected override void OnCreate()
@@ -39,6 +38,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
                 _gpuBufferLbs.SetData(tempArrayLbs);
                 tempArrayLbs.Dispose();
 
+                if (_gpuBufferLbs == null || !_gpuBufferLbs.IsValid()) return;
                 Shader.SetGlobalBuffer(AnimationUtils.PropertyAnimBufferLbs, _gpuBufferLbs);
             }
         }
@@ -47,16 +47,21 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
         {
         }
 
-        protected override void OnStopRunning() => DisposeSystem();
+        protected override void OnStopRunning()
+        {
+            Shader.SetGlobalBuffer(AnimationUtils.PropertyAnimBufferLbs, AnimationUtils.DummyBuffer);
+            DisposeSystem();
+        }
+
         protected override void OnDestroy() => DisposeSystem();
 
         private void DisposeSystem()
         {
-            _gpuBufferDqs?.Release();
-            _gpuBufferDqs = null;
-
-            _gpuBufferLbs?.Release();
-            _gpuBufferLbs = null;
+            if (_gpuBufferLbs != null)
+            {
+                _gpuBufferLbs.Dispose();
+                _gpuBufferLbs = null;
+            }
         }
     }
 }

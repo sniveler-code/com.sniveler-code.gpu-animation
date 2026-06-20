@@ -37,14 +37,6 @@ namespace SnivelerCode.GpuAnimation.Runtime.Components
     }
 
     [TemporaryBakingType]
-    [InternalBufferCapacity(8)]
-    public struct AnimatorBakeLodsBuffer : IBufferElementData
-    {
-        public Entity Value;
-        public uint Frame;
-    }
-
-    [TemporaryBakingType]
     public struct AnimatorBakeLodsData : IComponentData
     {
         public uint Frame;
