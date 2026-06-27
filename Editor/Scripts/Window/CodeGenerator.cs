@@ -42,6 +42,15 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
                             string paramName = ToCamelCase(instance.Parameters[i].Name);
                             cb.Line($"public static readonly byte {paramName} = {i};");
                         }
+
+                        using (cb.Block("public enum Enum"))
+                        {
+                            for (byte i = 0; i < instance.Parameters.Count; i++)
+                            {
+                                string paramName = ToCamelCase(instance.Parameters[i].Name);
+                                cb.Line($"{paramName} = {i},");
+                            }
+                        }
                     }
                 }
             }

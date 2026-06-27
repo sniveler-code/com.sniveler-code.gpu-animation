@@ -40,10 +40,13 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
                 var prefabEntity = prefabsBuffer[i].Value;
                 uint prefabOffset = blobData.Offsets[i];
 
-                var blobAnimatorData = state.EntityManager.GetComponentData<BlobAnimatorData>(prefabEntity);
-                blobAnimatorData.Offset = prefabOffset;
-                ecb.SetComponent(prefabEntity, blobAnimatorData);
-                nativeHashMap.Add(prefabEntity, prefabOffset);
+                if (state.EntityManager.Exists(prefabEntity))
+                {
+                    var blobAnimatorData = state.EntityManager.GetComponentData<BlobAnimatorData>(prefabEntity);
+                    blobAnimatorData.Offset = prefabOffset;
+                    ecb.SetComponent(prefabEntity, blobAnimatorData);
+                    nativeHashMap.Add(prefabEntity, prefabOffset);
+                }
             }
 
             foreach ((RefRO<MeshLODComponent> lod, Entity entity) in SystemAPI.Query<RefRO<MeshLODComponent>>()
@@ -54,9 +57,6 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
                 uint prefabOffset = nativeHashMap[lod.ValueRO.Group];
                 if (!state.EntityManager.HasComponent<AnimatorBakeLodsData>(lod.ValueRO.Group)) continue;
                 var lodsData = state.EntityManager.GetComponentData<AnimatorBakeLodsData>(lod.ValueRO.Group);
-                if (!state.EntityManager.HasBuffer<AnimatorLodsBuffer>(lod.ValueRO.Group)) continue;
-
-                var lodsBuffer = state.EntityManager.GetBuffer<AnimatorLodsBuffer>(lod.ValueRO.Group);
 
                 uint startFrame = prefabOffset + lodsData.Frame;
                 ecb.AddComponent(entity, new SnivelerMaterialFrames
@@ -68,7 +68,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
                 ecb.AddComponent(entity, new SnivelerMaterialBaseColor
                     {Value = new float4(1, 1, 1, 1)});
 
-                lodsBuffer.Add(new AnimatorLodsBuffer {Value = entity});
+                ecb.AddComponent<AnimatorLodTag>(entity);
             }
 
             ecb.Playback(state.EntityManager);

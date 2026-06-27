@@ -21,7 +21,6 @@ namespace SnivelerCode.GpuAnimation.Runtime.Authoring
             if (rendererAuthoring.Animators == null) return;
 
             var hashes = new Dictionary<int, uint>();
-
             var validAnimators = rendererAuthoring.Animators
                 .Where(a => a != null && a.Matrices != null).ToArray();
 

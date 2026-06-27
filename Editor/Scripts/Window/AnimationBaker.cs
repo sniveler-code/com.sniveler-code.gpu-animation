@@ -10,9 +10,13 @@ using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Animations;
-using UnityEngine.Animations.Rigging;
+
 using UnityEngine.Playables;
 using Object = UnityEngine.Object;
+
+#if SNC_USE_RIGGING
+using UnityEngine.Animations.Rigging;
+#endif
 
 namespace SnivelerCode.GpuAnimation.Editor.Window
 {
@@ -30,11 +34,7 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
                         Name = "TPose",
                         Frames = 1,
                         Start = 0,
-                        Speed = 1,
-                        RootMotionFrames = new List<RigidTransform>
-                        {
-                            RigidTransform.identity
-                        }
+                        Speed = 1
                     }
                 },
                 Bones = new MonoBlobBones(instance.MasterBones),
@@ -101,7 +101,6 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
                     .FirstOrDefault(s => s.state.name == clip.StateName);
 
                 var animationClip = (AnimationClip) animatorState.state.motion;
-
                 ushort frameCount = (ushort) (animationClip.length * clip.Fps);
                 var materialAnimation = new MonoBlobAnimator
                 {
@@ -109,10 +108,9 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
                     Frames = frameCount,
                     Start = (uint) result.BakedMatricesLbs.Count,
                     Loop = animationClip.isLooping,
-                    Speed = (byte) clip.Speed,
+                    Speed = animatorState.state.speed,
                     Transitions = new List<MonoBlobTransition>(),
-                    Name = CodeGenerator.ToCamelCase(animationClip.name),
-                    RootMotionFrames = new List<RigidTransform>()
+                    Name = CodeGenerator.ToCamelCase(animationClip.name)
                 };
 
                 clonedPrefab.transform.position = Vector3.zero;
@@ -129,6 +127,7 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
                 var clipPlayable = AnimationClipPlayable.Create(graph, animationClip);
                 clipPlayable.Pause();
                 Playable finalPlayable = clipPlayable;
+#if SNC_USE_RIGGING
                 var rigBuilder = clonedPrefab.GetComponent<RigBuilder>();
 
                 if (rigBuilder != null && rigBuilder.enabled)
@@ -136,7 +135,7 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
                     rigBuilder.StartPreview();
                     finalPlayable = rigBuilder.BuildPreviewGraph(graph, clipPlayable);
                 }
-
+#endif
                 output.SetSourcePlayable(finalPlayable);
                 graph.Play();
 
@@ -145,8 +144,9 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
                     float time = frame * (1f / clip.Fps);
                     float dt = frame == 0 ? 0f : 1f / clip.Fps;
                     clipPlayable.SetTime(time);
-
+#if SNC_USE_RIGGING
                     if (rigBuilder != null && rigBuilder.enabled) rigBuilder.UpdatePreviewGraph(graph);
+#endif
                     graph.Evaluate(dt);
 
                     foreach (var r in clonedRenderers) result.MaxBounds.Encapsulate(r.localBounds);
@@ -168,9 +168,9 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
 
                     SceneView.RepaintAll();
                 }
-
+#if SNC_USE_RIGGING
                 if (rigBuilder != null && rigBuilder.enabled) rigBuilder.StopPreview();
-
+#endif
                 if (graph.IsValid()) graph.Destroy();
                 result.Animations.Add(materialAnimation);
             }
@@ -210,7 +210,6 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
                 {
                     Index = (byte) targetIndex,
                     Start = 0,
-                    Duration = anyTransition.duration,
                     Conditions = conditions
                 };
 
@@ -252,10 +251,7 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
                     ushort startFrame = 0;
                     if (transition.hasExitTime)
                     {
-                        // % 1.0f protects against exitTime > 1
-                        // (if the animation is looped and the transition is on the 2nd circle)
-                        float normalizedExit = transition.exitTime % 1.0f;
-                        startFrame = (ushort) (normalizedExit * frameCount);
+                        startFrame = (ushort) (frameCount - 3);
                     }
 
                     // collect conditions
@@ -278,7 +274,6 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
                     {
                         Index = (byte) targetIndex,
                         Start = startFrame,
-                        Duration = transition.duration,
                         Conditions = conditions
                     });
                 }

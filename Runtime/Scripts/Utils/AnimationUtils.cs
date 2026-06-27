@@ -65,8 +65,16 @@ namespace SnivelerCode.GpuAnimation.Runtime.Utils
             );
         }
 
-        public static void Play(this ref AnimatorData data, byte anim)
+        public static void Play(this ref AnimatorData data, byte anim, float crossFade = 0.15f)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (crossFade > 0f)
+                Debug.LogWarning(
+                    "[GpuAnimationEntities] Smooth Crossfade - PRO Feature. " +
+                    "LITE performs an instant snap. " +
+                    "assetstore.unity.com/packages/tools/animation/gpu-animation-entities-pro-370150");
+#endif
+
             data.Index = anim;
             data.Time = 0f;
             data.Frame = 0;
@@ -86,6 +94,6 @@ namespace SnivelerCode.GpuAnimation.Runtime.Utils
         }
 
         public void Apply(DynamicBuffer<AnimatorParameterData> buffer) =>
-            buffer[_id] = new AnimatorParameterData {Value = _value, IsTrigger = buffer[_id].IsTrigger};
+            buffer[_id] = new AnimatorParameterData {Value = _value};
     }
 }

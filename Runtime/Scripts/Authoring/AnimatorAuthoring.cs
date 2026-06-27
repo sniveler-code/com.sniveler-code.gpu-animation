@@ -21,29 +21,21 @@ namespace SnivelerCode.GpuAnimation.Runtime.Authoring
                 using var builder = new BlobBuilder(Allocator.Temp);
                 ref BlobAnimatorAsset blobAsset = ref builder.ConstructRoot<BlobAnimatorAsset>();
                 blobAsset.DefaultAnimation = data.DefaultAnimation;
-                blobAsset.BoneCount = (byte)data.BonesCount;
+                blobAsset.BoneCount = (byte) data.BonesCount;
 
                 Entity entity = GetEntity(TransformUsageFlags.Dynamic);
                 AddComponent(entity, new AnimatorBakeLodsData {Frame = data.Animations[data.DefaultAnimation].Start});
-                AddBuffer<AnimatorLodsBuffer>(entity);
 
-                //ar lodsBuffer = AddBuffer<AnimatorBakeLodsBuffer>(entity);
-                /*var lodGroup = data.GetComponent<LODGroup>();
-                var lods = lodGroup.GetLODs();
-                foreach (var lod in lods)
-                {
-                    GetEntity(lod.renderers[0].gameObject, TransformUsageFlags.Dynamic);
-                }*/
-
+                uint triggerMask = 0;
                 var paramsBuffer = AddBuffer<AnimatorParameterData>(entity);
-                foreach (var parameter in data.Parameters)
+                for (int i = 0; i < data.Parameters.Count; i++)
                 {
-                    paramsBuffer.Add(new AnimatorParameterData
-                    {
-                        Value = parameter.Value,
-                        IsTrigger = parameter.IsTrigger
-                    });
+                    var parameter = data.Parameters[i];
+                    paramsBuffer.Add(new AnimatorParameterData {Value = parameter.Value});
+                    if (parameter.IsTrigger) triggerMask |= 1u << i;
                 }
+
+                blobAsset.TriggerMask = triggerMask;
 
                 // bake animations
                 BlobBuilderArray<BlobAnimationAsset> animationArray =
@@ -51,7 +43,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Authoring
                 for (int i = 0; i < animationArray.Length; ++i)
                 {
                     MonoBlobAnimator monoAnimation = data.Animations[i];
-                    monoAnimation.ToBlobAsset(builder, ref animationArray[i]);
+                    monoAnimation.ToBlobAsset(ref animationArray[i]);
                     if (monoAnimation.Transitions.Count <= 0)
                     {
                         continue;
@@ -82,6 +74,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Authoring
 
                 AddBlobAsset(ref blobAssetReference, out _);
                 AddComponent(entity, new BlobAnimatorData {Value = blobAssetReference});
+                AddComponent<AnimatorOffsetData>(entity);
                 AddComponent(entity, new AnimatorData {Index = data.DefaultAnimation});
             }
         }

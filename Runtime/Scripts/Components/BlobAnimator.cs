@@ -14,6 +14,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Components
         public byte DefaultAnimation;
         public byte BoneCount;
         public BlobArray<BlobAnimationAsset> Animations;
+        public uint TriggerMask;
     }
 
     public struct BlobAnimationAsset
@@ -30,7 +31,6 @@ namespace SnivelerCode.GpuAnimation.Runtime.Components
     public struct BlobTransitionAsset
     {
         public byte Index;
-        public float Duration;
         public ushort Start;
         public BlobArray<BlobConditionAsset> Conditions;
     }

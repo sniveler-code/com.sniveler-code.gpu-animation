@@ -7,7 +7,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using SnivelerCode.GpuAnimation.Runtime.Authoring;
 using SnivelerCode.GpuAnimation.Runtime.Components;
+using SnivelerCode.GpuAnimation.Runtime.Utils;
+using Unity.Entities;
+using Unity.Scenes;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -50,11 +54,27 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
             {
                 if (instance.Source == null) return;
 
+                var world = World.DefaultGameObjectInjectionWorld;
+                if (world != null)
+                {
+                    SubScene[] subScenes = Object.FindObjectsByType<SubScene>
+                        (FindObjectsInactive.Include, FindObjectsSortMode.None);
+
+                    foreach (SubScene subScene in subScenes)
+                    {
+                        if (subScene.SceneGUID.Equals(default)) continue;
+                        if (subScene.EditingScene.IsValid() && subScene.EditingScene.isLoaded)
+                            EditorSceneManager.CloseScene(subScene.EditingScene, false);
+                        SceneSystem.UnloadScene(world.Unmanaged, subScene.SceneGUID);
+                    }
+                }
+
                 instance.Name = CodeGenerator.ToCamelCase(instance.Source.name);
                 string folderResources = _fileSystem.GetGeneratedFolder(instance.Name);
                 _fileSystem.ForceDirectory(folderResources);
 
                 // 1. Bake Animations and Bones
+                Shader.SetGlobalBuffer(AnimationUtils.PropertyAnimBufferLbs, AnimationUtils.DummyBuffer);
                 bakeResult = _baker.BakeAnimations(instance);
 
                 List<MonoBlobAnimator> animations = bakeResult.Animations;
@@ -99,7 +119,8 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
                 animatorComponent.Parameters = instance.Parameters;
                 animatorComponent.DefaultAnimation = (byte) (defaultIndex + 1);
 
-                PrefabUtility.SaveAsPrefabAsset(rootObject, Path.Combine(prefabsFolder, $"{instance.Name}.prefab"));
+                string prefabPath = Path.Combine(prefabsFolder, $"{instance.Name}.prefab");
+                PrefabUtility.SaveAsPrefabAsset(rootObject, prefabPath);
                 Object.DestroyImmediate(rootObject);
             }
             catch (Exception e)
