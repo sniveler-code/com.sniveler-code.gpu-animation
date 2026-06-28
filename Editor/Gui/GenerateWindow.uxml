@@ -17,8 +17,8 @@
             <ui:VisualElement class="tabs-container" style="flex-direction: row; justify-content: center;">
                 <ui:Label tabindex="-1" text="Animator" parse-escape-sequences="true" display-tooltip-when-elided="true" class="tab-button tab-button--active"/>
                 <ui:Label tabindex="-1" text="Lods" parse-escape-sequences="true" display-tooltip-when-elided="true" class="tab-button" style="width: 100px;"/>
-                <ui:Label tabindex="-1" text="🔒 Bones" parse-escape-sequences="true" display-tooltip-when-elided="true" class="tab-button" style="width: 100px;"/>
-                <ui:Label tabindex="-1" text="👑 Pro" parse-escape-sequences="true" display-tooltip-when-elided="true" class="tab-button" style="width: 100px;"/>
+                <ui:Label tabindex="-1" text="✘Bones" parse-escape-sequences="true" display-tooltip-when-elided="true" class="tab-button" style="width: 100px; color: rgb(174, 0, 0);"/>
+                <ui:Label tabindex="-1" text="★Pro" parse-escape-sequences="true" display-tooltip-when-elided="true" class="tab-button" style="width: 100px;"/>
             </ui:VisualElement>
             <ui:VisualElement class="content-container" style="flex-grow: 1;">
                 <ui:VisualElement name="Animator" class="tab-page tab-page--active" style="flex-grow: 1;">
@@ -31,12 +31,12 @@
                             <ui:VisualElement style="flex-grow: 0; margin-bottom: 5px;">
                                 <ui:VisualElement style="flex-direction: row; margin-top: 5px; justify-content: flex-start; align-items: center; margin-right: 5px; flex-grow: 0; margin-left: 5px;">
                                     <ui:VisualElement style="flex-grow: 0; background-image: url(&quot;project://database/Packages/com.sniveler-code.gpu-animation/Editor/Regular/_animator_dq.png?fileID=2800000&amp;guid=f7a8c104b0ef043a088f643db12fe431&amp;type=3#_animator_dq&quot;); -unity-background-scale-mode: stretch-to-fill; width: 24px; height: 24px; margin-right: 5px;"/>
-                                    <ui:Label tabindex="-1" text="🔒 Use Dual Quaternion" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="false" tooltip="Pro Version Require" style="width: 150px;"/>
+                                    <ui:Label tabindex="-1" text="✘Use Dual Quaternion" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="false" tooltip="Pro Version Require" style="width: 150px; color: rgb(174, 0, 0);"/>
                                     <ui:Toggle name="UseDqs" tooltip="Pro Version Require" style="flex-direction: row;"/>
                                 </ui:VisualElement>
                                 <ui:VisualElement style="flex-direction: row; flex-grow: 0; margin-top: 5px; justify-content: flex-start; align-items: center; margin-right: 5px; margin-left: 5px;">
                                     <ui:VisualElement name="VisualElement" style="flex-grow: 0; background-image: url(&quot;project://database/Packages/com.sniveler-code.gpu-animation/Editor/Regular/_animator_rm.png?fileID=2800000&amp;guid=d934fb6fc63ab4425bcba71bbc5829d9&amp;type=3#_animator_rm&quot;); -unity-background-scale-mode: stretch-to-fill; width: 24px; height: 24px; margin-right: 5px;"/>
-                                    <ui:Label tabindex="-1" text="🔒 Apply Root Motion" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="false" tooltip="Pro Version Require" style="width: 150px;"/>
+                                    <ui:Label tabindex="-1" text="✘Apply Root Motion" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="false" tooltip="Pro Version Require" style="width: 150px; color: rgb(175, 0, 0);"/>
                                     <ui:Toggle name="RootMotion" tooltip="Pro Version Require" style="flex-direction: row;"/>
                                 </ui:VisualElement>
                             </ui:VisualElement>
@@ -86,8 +86,9 @@
                     </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:VisualElement name="Pro" class="tab-page" style="flex-grow: 1;">
-                    <ui:Label text="👑 UPGRADE TO PRO:&#10;&#10;Need more features for a full-scale game? &#10;Check out GPU Animation Entities PRO to unlock:&#10;&#10;- Dual Quaternion Skinning (DQS) to prevent mesh volume loss&#10; - True Root Motion&#10;- Zero-Latency Sockets (Bone Attachments for weapons/items)&#10;- Smooth Crossfading &amp; Tick Rate Optimization"/>
-                    <ui:Button text="Get Pro" name="GetProp" class="bake-button" style="margin-top: 10px;"/>
+                    <ui:Label text="★UPGRADE TO PRO:&#10;&#10;Need more features for a full-scale game? &#10;Check out GPU Animation Entities PRO to unlock:&#10;&#10;- Dual Quaternion Skinning (DQS) to prevent mesh volume loss&#10; - True Root Motion&#10;- Zero-Latency Sockets (Bone Attachments for weapons/items)&#10;- Smooth Crossfading &amp; Tick Rate Optimization" style="margin-bottom: 5px;"/>
+                    <ui:VisualElement name="" style="flex-grow: 1; background-image: url(&quot;project://database/Packages/com.sniveler-code.gpu-animation/Editor/Regular/_free_poster.jpg?fileID=2800000&amp;guid=df676933d2884d84ba8928d2d256dd3b&amp;type=3#_free_poster&quot;); -unity-background-scale-mode: scale-to-fit;"/>
+                    <ui:Button text="Compare Lite vs. Pro ↗" name="GetProp" class="bake-button" style="margin-top: 10px;"/>
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>

@@ -33,6 +33,8 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
         private const string _errorAnimator = "Select the Animator Controller to modify its parameters and states.";
         private const string _errorShader1 = "No shader selected. The generated asset may not render correctly.";
         private const string _errorShader2 = "Selected shader does not use SnivelerAnimationNode.";
+        private const string _proUrl = "https://assetstore.unity.com/packages/tools/animation/gpu-animation-entities-pro-370150";
+
 
         /// <summary>
         /// The processor responsible for the actual baking logic.
@@ -134,6 +136,9 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
             var rootMotion = RootQuery<Toggle>("RootMotion");
             rootMotion.value = false;
             rootMotion.SetEnabled(false);
+
+            RootQuery<Button>("GetProp").RegisterCallback<ClickEvent>(_ =>
+                Application.OpenURL(_proUrl));
 
             ToggleMessageInfo("prefab", _errorPrefab, 2);
             ToggleMessageInfo("animator", _errorAnimator, 2);

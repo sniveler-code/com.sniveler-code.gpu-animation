@@ -1,4 +1,5 @@
 ﻿using SnivelerCode.GpuAnimation.Runtime.Components;
+using SnivelerCode.GpuAnimation.Runtime.Utils;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -9,10 +10,8 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
 {
     [WorldSystemFilter(WorldSystemFilterFlags.BakingSystem)]
     [UpdateInGroup(typeof(PostBakingSystemGroup), OrderLast = true)]
-    [BurstCompile]
     public partial struct AnimatorBakingSystem : ISystem
     {
-        [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<AnimatorPrefabBuffer>();
@@ -26,7 +25,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
 
             if (!sceneConfig.Blob.IsCreated)
             {
-                UnityEngine.Debug.LogError("[SCGpuAnimation] Scene Renderer doesn't initialised");
+                AnimatorLogger.ErrorManaged("Scene Renderer doesn't initialised");
                 return;
             }
 
@@ -40,7 +39,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
                 var prefabEntity = prefabsBuffer[i].Value;
                 uint prefabOffset = blobData.Offsets[i];
 
-                if (state.EntityManager.Exists(prefabEntity))
+                if (state.EntityManager.HasComponent<BlobAnimatorData>(prefabEntity))
                 {
                     var blobAnimatorData = state.EntityManager.GetComponentData<BlobAnimatorData>(prefabEntity);
                     blobAnimatorData.Offset = prefabOffset;
@@ -49,6 +48,9 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
                 }
             }
 
+            AnimatorLogger.LogManaged($"Blob count after offsets filled: {nativeHashMap.Count}");
+
+            int lodsCount = 0;
             foreach ((RefRO<MeshLODComponent> lod, Entity entity) in SystemAPI.Query<RefRO<MeshLODComponent>>()
                          .WithOptions(EntityQueryOptions.IncludePrefab | EntityQueryOptions.IncludeDisabledEntities)
                          .WithEntityAccess())
@@ -69,7 +71,10 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
                     {Value = new float4(1, 1, 1, 1)});
 
                 ecb.AddComponent<AnimatorLodTag>(entity);
+                lodsCount++;
             }
+
+            AnimatorLogger.LogManaged($"Total LODs processed: {lodsCount}");
 
             ecb.Playback(state.EntityManager);
             nativeHashMap.Dispose();

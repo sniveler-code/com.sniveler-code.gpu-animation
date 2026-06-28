@@ -40,6 +40,8 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
 
                 if (_gpuBufferLbs == null || !_gpuBufferLbs.IsValid()) return;
                 Shader.SetGlobalBuffer(AnimationUtils.PropertyAnimBufferLbs, _gpuBufferLbs);
+                AnimatorLogger.LogManaged(
+                    $"GPU buffer for LBS matrices successfully initialized with {lengthLbs} matrices.");
             }
         }
 
