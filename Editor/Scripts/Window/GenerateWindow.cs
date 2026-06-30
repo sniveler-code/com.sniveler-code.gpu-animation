@@ -349,17 +349,17 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
             dropdown.choices = qualityNames.ToList();
             dropdown.value = qualityNames[0];
             dropdown.SetEnabled(false);
-            dropdown.tooltip = "Pro version require";
+            dropdown.tooltip = "Pro Version required";
 
             var interpolationField = lodTemplate.Q<Toggle>("Interpolation");
             interpolationField.value = false;
             interpolationField.SetEnabled(false);
-            interpolationField.tooltip = "Pro version require";
+            interpolationField.tooltip = "Pro Version required";
 
             var shadowsField = lodTemplate.Q<Toggle>("Shadows");
             shadowsField.value = true;
             shadowsField.SetEnabled(false);
-            shadowsField.tooltip = "Pro version require";
+            shadowsField.tooltip = "Pro Version required";
 
             content.Add(lodTemplate);
         }

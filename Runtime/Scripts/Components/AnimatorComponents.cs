@@ -9,12 +9,6 @@ namespace SnivelerCode.GpuAnimation.Runtime.Components
         public BlobAssetReference<GpuBlobAnimationAsset> Blob;
     }
 
-    [InternalBufferCapacity(16)]
-    public struct AnimatorPrefabBuffer : IBufferElementData
-    {
-        public Entity Value;
-    }
-
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
     public struct AnimatorData : IComponentData
     {

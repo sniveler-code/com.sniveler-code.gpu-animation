@@ -11,7 +11,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Components
 
     public struct BlobAnimatorAsset
     {
-        public byte DefaultAnimation;
+        public int MatricesHash;
         public byte BoneCount;
         public BlobArray<BlobAnimationAsset> Animations;
         public uint TriggerMask;
@@ -25,7 +25,6 @@ namespace SnivelerCode.GpuAnimation.Runtime.Components
         public float Speed;
         public bool Loop;
         public BlobArray<BlobTransitionAsset> Transitions;
-        public BlobArray<RigidTransform> RootMotionFrames;
     }
 
     public struct BlobTransitionAsset
@@ -46,6 +45,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Components
     {
         public BlobArray<float3x4> MatricesLbs;
         public BlobArray<uint> Offsets;
+        public BlobArray<int> Hashes;
     }
 
 }

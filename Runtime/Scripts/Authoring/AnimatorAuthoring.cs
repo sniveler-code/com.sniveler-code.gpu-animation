@@ -20,8 +20,9 @@ namespace SnivelerCode.GpuAnimation.Runtime.Authoring
             {
                 using var builder = new BlobBuilder(Allocator.Temp);
                 ref BlobAnimatorAsset blobAsset = ref builder.ConstructRoot<BlobAnimatorAsset>();
-                blobAsset.DefaultAnimation = data.DefaultAnimation;
+
                 blobAsset.BoneCount = (byte) data.BonesCount;
+                blobAsset.MatricesHash = data.Matrices.GetInstanceID();
 
                 Entity entity = GetEntity(TransformUsageFlags.Dynamic);
                 AddComponent(entity, new AnimatorBakeLodsData {Frame = data.Animations[data.DefaultAnimation].Start});

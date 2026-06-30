@@ -10,68 +10,60 @@ namespace SnivelerCode.GpuAnimation.Runtime.Authoring
 {
     public sealed class AnimatorRendererAuthoring : MonoBehaviour
     {
-        [SerializeField] private AnimatorAuthoring[] animators;
-        public AnimatorAuthoring[] Animators => animators;
-    }
+        [SerializeField] private AnimatorMatricesAsset[] matrices;
 
-    public sealed class SceneAnimatorBaker : Baker<AnimatorRendererAuthoring>
-    {
-        public override void Bake(AnimatorRendererAuthoring rendererAuthoring)
+        private sealed class SceneAnimatorBaker : Baker<AnimatorRendererAuthoring>
         {
-            if (rendererAuthoring.Animators == null) return;
-
-            var hashes = new Dictionary<int, uint>();
-            var validAnimators = rendererAuthoring.Animators
-                .Where(a => a != null && a.Matrices != null).ToArray();
-
-            if (validAnimators.Length == 0) return;
-
-            int totalLbs = 0;
-            foreach (var a in validAnimators)
+            public override void Bake(AnimatorRendererAuthoring rendererAuthoring)
             {
-                DependsOn(a.Matrices);
-                totalLbs += a.Matrices.MatricesLbs?.Length ?? 0;
-            }
+                if (rendererAuthoring.matrices == null) return;
 
-            using var builder = new BlobBuilder(Allocator.Temp);
-            var entity = GetEntity(TransformUsageFlags.None);
-            var prefabBuffer = AddBuffer<AnimatorPrefabBuffer>(entity);
+                var hashes = new Dictionary<int, uint>();
+                var validMatrices = rendererAuthoring.matrices
+                    .Where(a => a != null && a.MatricesLbs != null).ToArray();
 
-            ref var root = ref builder.ConstructRoot<GpuBlobAnimationAsset>();
-            var lbsArray = builder.Allocate(ref root.MatricesLbs, totalLbs);
-            var offsets = builder.Allocate(ref root.Offsets, validAnimators.Length);
+                if (validMatrices.Length == 0) return;
 
-            uint currentOffsetLbs = 0;
-            for (int i = 0; i < validAnimators.Length; i++)
-            {
-                var animator = validAnimators[i];
-                var prefabEntity = GetEntity(animator, TransformUsageFlags.Dynamic);
-                prefabBuffer.Add(new AnimatorPrefabBuffer {Value = prefabEntity});
-
-                int hashInstance = animator.Matrices.GetInstanceID();
-                if (hashes.TryGetValue(hashInstance, out uint offset))
+                int totalLbs = 0;
+                foreach (var a in validMatrices)
                 {
-                    offsets[i] = offset;
-                    continue;
+                    DependsOn(a);
+                    totalLbs += a.MatricesLbs?.Length ?? 0;
                 }
 
-                uint currentOffset = currentOffsetLbs;
-                offsets[i] = currentOffset;
-                hashes[hashInstance] = currentOffset;
+                using var builder = new BlobBuilder(Allocator.Temp);
+                var entity = GetEntity(TransformUsageFlags.None);
 
-                var src = animator.Matrices.MatricesLbs;
-                if (src == null) continue;
+                ref var root = ref builder.ConstructRoot<GpuBlobAnimationAsset>();
+                var lbsArray = builder.Allocate(ref root.MatricesLbs, totalLbs);
+                var offsets = builder.Allocate(ref root.Offsets, validMatrices.Length);
+                var blobHashes = builder.Allocate(ref root.Hashes, validMatrices.Length);
 
-                for (int m = 0; m < src.Length; m++)
-                    lbsArray[(int) currentOffsetLbs + m] = src[m];
-                currentOffsetLbs += (uint) src.Length;
+                uint currentOffsetLbs = 0;
+                for (int i = 0; i < validMatrices.Length; i++)
+                {
+                    var matrices = validMatrices[i];
+                    int hashInstance = matrices.GetInstanceID();
+                    if(hashes.ContainsKey(hashInstance)) continue;
+
+                    uint currentOffset = currentOffsetLbs;
+                    offsets[i] = currentOffset;
+                    blobHashes[i] = hashInstance;
+                    hashes[hashInstance] = currentOffset;
+
+                    var src = matrices.MatricesLbs;
+                    for (int m = 0; m < src.Length; m++)
+                        lbsArray[(int) currentOffsetLbs + m] = src[m];
+
+                    currentOffsetLbs += (uint) src.Length;
+                }
+
+                var blobRef =
+                    builder.CreateBlobAssetReference<GpuBlobAnimationAsset>(Allocator.Persistent);
+
+                AddBlobAsset(ref blobRef, out Hash128 _);
+                AddComponent(entity, new SceneAnimatorConfigData {Blob = blobRef});
             }
-
-            var blobRef =
-                builder.CreateBlobAssetReference<GpuBlobAnimationAsset>(Allocator.Persistent);
-
-            AddBlobAsset(ref blobRef, out Hash128 _);
-            AddComponent(entity, new SceneAnimatorConfigData {Blob = blobRef});
         }
     }
 }

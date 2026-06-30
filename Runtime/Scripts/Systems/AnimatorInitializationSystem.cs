@@ -40,8 +40,13 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
 
                 if (_gpuBufferLbs == null || !_gpuBufferLbs.IsValid()) return;
                 Shader.SetGlobalBuffer(AnimationUtils.PropertyAnimBufferLbs, _gpuBufferLbs);
-                AnimatorLogger.LogManaged(
-                    $"GPU buffer for LBS matrices successfully initialized with {lengthLbs} matrices.");
+
+#if UNITY_EDITOR
+                long totalBytes = (long) lengthLbs * 48;
+                double sizeInMb = (double) totalBytes / (1024 * 1024);
+
+                AnimatorLogger.LogManaged($"GraphicsBuffer successfully initialized with {sizeInMb:F2} Mb.");
+#endif
             }
         }
 
@@ -59,11 +64,10 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
 
         private void DisposeSystem()
         {
-            if (_gpuBufferLbs != null)
-            {
-                _gpuBufferLbs.Dispose();
-                _gpuBufferLbs = null;
-            }
+            if (_gpuBufferLbs == null) return;
+
+            _gpuBufferLbs.Dispose();
+            _gpuBufferLbs = null;
         }
     }
 }

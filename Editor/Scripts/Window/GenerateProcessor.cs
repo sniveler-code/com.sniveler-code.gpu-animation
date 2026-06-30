@@ -100,7 +100,7 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
                 // 3. Create ScriptableObject for Matrices
                 var bufferAsset = ScriptableObject.CreateInstance<AnimatorMatricesAsset>();
                 bufferAsset.MatricesLbs = bakeResult.BakedMatricesLbs.ToArray();
-                _fileSystem.SaveAsset(bufferAsset, Path.Combine(dataFolder, "AnimatorMatrices.asset"));
+                _fileSystem.SaveAsset(bufferAsset, Path.Combine(dataFolder, $"{instance.Name}.asset"));
 
                 // 4. default animation
                 var stateMachine = instance.Animator.layers[0].stateMachine;
