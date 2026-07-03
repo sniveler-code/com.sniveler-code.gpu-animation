@@ -19,7 +19,7 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
             _query = new EntityQueryBuilder(Allocator.Temp)
                 .WithAllRW<Demo3CombatData, AnimatorData>()
                 .WithAll<Demo3UnitConfig>()
-                .WithNone<Demo3DeadData, Demo3SpawnerTag>()
+                .WithNone<Demo3DeadData>()
                 .Build(ref state);
 
             state.RequireForUpdate(_query);
@@ -55,10 +55,7 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
             private void Execute([EntityIndexInQuery] int sortKey, Entity entity,
                 in Demo3UnitConfig config, ref Demo3CombatData combat, ref AnimatorData animator)
             {
-                if (!DamageMailbox.TryGetFirstValue(entity, out Demo3DamageMessage msg, out var iterator))
-                {
-                    return;
-                }
+                if (!DamageMailbox.TryGetFirstValue(entity, out Demo3DamageMessage msg, out var iterator)) return;
 
                 float totalDamage = 0f;
                 do
@@ -67,17 +64,18 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
                 } while (DamageMailbox.TryGetNextValue(out msg, ref iterator));
 
                 combat.Health -= totalDamage;
+                ref readonly Demo3UnitConfigBlob staticData = ref config.Value.Value;
 
                 if (combat.Health <= 0)
                 {
                     CommandBuffer.SetComponentEnabled<Demo3DeadData>(sortKey, entity, true);
-                    animator.Play(config.AnimationDeathIndex);
+                    animator.Play(staticData.AnimationDeathIndex);
                 }
                 else
                 {
                     if (animator.Index == 1)
                     {
-                        animator.Play(config.AnimationHitIndex);
+                        animator.Play(staticData.AnimationHitIndex);
                     }
                 }
             }

@@ -171,17 +171,6 @@ MonoBehaviour:
     Speed: 1
     Loop: 0
     Transitions: []
-    RootMotionFrames:
-    - rot:
-        value:
-          x: 0
-          y: 0
-          z: 0
-          w: 1
-      pos:
-        x: 0
-        y: 0
-        z: 0
   - Name: GreatSwordIdle
     FPS: 60
     Start: 43
@@ -191,19 +180,16 @@ MonoBehaviour:
     Transitions:
     - Index: 2
       Start: 0
-      Duration: 0.25
       Conditions:
       - Parameter: 0
         Mode: 3
         Threshold: 0.2
     - Index: 3
       Start: 0
-      Duration: 0.25
       Conditions:
       - Parameter: 0
         Mode: 3
         Threshold: 0.5
-    RootMotionFrames: []
   - Name: GreatSwordWalk
     FPS: 60
     Start: 5203
@@ -213,19 +199,16 @@ MonoBehaviour:
     Transitions:
     - Index: 3
       Start: 0
-      Duration: 0.25
       Conditions:
       - Parameter: 0
         Mode: 3
         Threshold: 0.5
     - Index: 1
       Start: 0
-      Duration: 0.25
       Conditions:
       - Parameter: 0
         Mode: 4
         Threshold: 0.2
-    RootMotionFrames: []
   - Name: GreatSwordRun
     FPS: 60
     Start: 8729
@@ -235,19 +218,16 @@ MonoBehaviour:
     Transitions:
     - Index: 1
       Start: 0
-      Duration: 0.25
       Conditions:
       - Parameter: 0
         Mode: 4
         Threshold: 0.2
     - Index: 2
       Start: 0
-      Duration: 0.25
       Conditions:
       - Parameter: 0
         Mode: 4
         Threshold: 0.5
-    RootMotionFrames: []
   - Name: GreatSwordImpact
     FPS: 60
     Start: 10277
@@ -257,9 +237,7 @@ MonoBehaviour:
     Transitions:
     - Index: 1
       Start: 57
-      Duration: 0.25
       Conditions: []
-    RootMotionFrames: []
   - Name: GreatSwordSlash
     FPS: 60
     Start: 13373
@@ -269,9 +247,7 @@ MonoBehaviour:
     Transitions:
     - Index: 1
       Start: 95
-      Duration: 0.25
       Conditions: []
-    RootMotionFrames: []
   - Name: GreatSwordSlash2
     FPS: 60
     Start: 18103
@@ -281,9 +257,7 @@ MonoBehaviour:
     Transitions:
     - Index: 1
       Start: 61
-      Duration: 0.25
       Conditions: []
-    RootMotionFrames: []
   - Name: TwoHandedSwordDeath
     FPS: 60
     Start: 21371
@@ -291,7 +265,6 @@ MonoBehaviour:
     Speed: 1
     Loop: 0
     Transitions: []
-    RootMotionFrames: []
   Parameters:
   - Name: Speed
     Value: 1
@@ -311,6 +284,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6e117951fad4b3da6f4f57850f69c5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
   radius: 0.6
   paramSpeedIndex: 0
   animationHitIndex: 4

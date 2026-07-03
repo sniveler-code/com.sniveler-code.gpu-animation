@@ -35,10 +35,10 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
             }.ScheduleParallel(_query, state.Dependency);
         }
 
-        [BurstCompile]
+        [BurstCompile(OptimizeFor = OptimizeFor.Performance, FloatMode = FloatMode.Fast, DisableSafetyChecks = true)]
         private partial struct AnimatorUpdateJob : IJobEntity
         {
-            private void Execute(in Entity entity, ref AnimatorOffsetData offset, ref AnimatorData anim,
+            private void Execute(ref AnimatorOffsetData offset, ref AnimatorData anim,
                 in BlobAnimatorData blob, DynamicBuffer<AnimatorParameterData> @params)
             {
                 // PHASE 1: GAMEPLAY LOGIC
@@ -49,9 +49,9 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
                 float fpsA = animA.Fps * animA.Speed;
                 float durationA = animA.Frames / fpsA;
 
-                anim.Time = animA.Loop
-                    ? math.fmod(anim.Time, durationA)
-                    : math.min(anim.Time, durationA - 0.001f);
+                float loopedTime = math.fmod(anim.Time, durationA);
+                float clampedTime = math.min(anim.Time, durationA - 0.001f);
+                anim.Time = math.select(clampedTime, loopedTime, animA.Loop);
 
                 float floatFrameA = anim.Time * fpsA;
                 anim.PrevFrame = anim.Frame;
@@ -66,44 +66,53 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
                         if (anim.Frame < transition.Start) continue;
 
                         bool conditionsMet = true;
+                        uint triggerResetMask = 0;
+
                         for (int c = 0; c < transition.Conditions.Length; c++)
                         {
                             ref var condition = ref transition.Conditions[c];
-                            if (condition.Parameter >= @params.Length)
+                            int paramIndex = condition.Parameter;
+
+                            if (paramIndex >= @params.Length)
                             {
                                 conditionsMet = false;
                                 break;
                             }
 
-                            float pValue = @params[condition.Parameter].Value;
+                            float pValue = @params[paramIndex].Value;
                             const float tolerance = 1e-5f;
-                            conditionsMet = condition.Mode switch
-                            {
-                                1 => pValue > 0.5f,
-                                2 => pValue < 0.5f,
-                                3 => pValue > condition.Threshold,
-                                4 => pValue < condition.Threshold,
-                                6 => math.abs(pValue - condition.Threshold) < tolerance,
-                                7 => math.abs(pValue - condition.Threshold) >= tolerance,
-                                _ => false
-                            };
+                            byte mode = condition.Mode;
 
-                            if (!conditionsMet) break;
+                            float diff = math.abs(pValue - condition.Threshold);
+
+                            bool isMet =
+                                (mode == 1 & pValue > 0.5f) |
+                                (mode == 2 & pValue < 0.5f) |
+                                (mode == 3 & pValue > condition.Threshold) |
+                                (mode == 4 & pValue < condition.Threshold) |
+                                (mode == 6 & diff < tolerance) |
+                                (mode == 7 & diff >= tolerance);
+
+                            if (!isMet)
+                            {
+                                conditionsMet = false;
+                                break;
+                            }
+
+                            uint maskBit = 1u << paramIndex;
+                            triggerResetMask |= math.select(0u, maskBit, mode == 1);
                         }
 
                         if (!conditionsMet) continue;
 
-                        for (int c = 0; c < transition.Conditions.Length; c++)
+                        uint actualTriggers = triggerResetMask & blobAnimator.TriggerMask;
+                        while (actualTriggers != 0)
                         {
-                            ref var condition = ref transition.Conditions[c];
-                            if (condition.Mode != 1) continue;
-
-                            bool isTrigger = (blobAnimator.TriggerMask & (1u << condition.Parameter)) != 0;
-                            if (!isTrigger) continue;
-
-                            var paramData = @params[condition.Parameter];
+                            int bitIndex = math.tzcnt(actualTriggers);
+                            var paramData = @params[bitIndex];
                             paramData.Value = 0.0f;
-                            @params[condition.Parameter] = paramData;
+                            @params[bitIndex] = paramData;
+                            actualTriggers &= ~(1u << bitIndex);
                         }
 
                         anim.Index = transition.Index;
@@ -117,8 +126,9 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
 
                 // PHASE 2: VISUAL LOGIC
                 float lerpFactor = floatFrameA - anim.Frame;
-                ushort nextFrameA = (ushort)
-                    (anim.Frame + 1 >= animA.Frames ? animA.Loop ? 0 : anim.Frame : anim.Frame + 1);
+                bool isEnd = anim.Frame + 1 >= animA.Frames;
+                int wrappedFrame = math.select(anim.Frame, 0, animA.Loop);
+                ushort nextFrameA = (ushort)math.select(anim.Frame + 1, wrappedFrame, isEnd);
 
                 uint bCount = blobAnimator.BoneCount;
                 uint offsetA0 = blob.Offset + animA.Start + anim.Frame * bCount;

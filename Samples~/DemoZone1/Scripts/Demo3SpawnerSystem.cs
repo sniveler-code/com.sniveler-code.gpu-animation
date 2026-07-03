@@ -1,6 +1,4 @@
-﻿using SnivelerCode.GpuAnimation.Generated;
-using SnivelerCode.GpuAnimation.Runtime.Components;
-using Unity.Burst;
+﻿using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -22,7 +20,6 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
                 .Build(ref state);
 
             state.RequireForUpdate(_query);
-            state.RequireForUpdate<AnimatorPrefabBuffer>();
             state.RequireForUpdate<Demo3BattleData>();
             state.RequireForUpdate<EndInitializationEntityCommandBufferSystem.Singleton>();
         }
@@ -32,12 +29,10 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
         {
             var buffer = SystemAPI.GetSingleton<EndInitializationEntityCommandBufferSystem.Singleton>();
             var commandBuffer = buffer.CreateCommandBuffer(state.WorldUnmanaged);
-            var prefabBuffer = SystemAPI.GetSingletonBuffer<AnimatorPrefabBuffer>();
 
             state.Dependency = new ProgressJob
             {
                 CommandBuffer = commandBuffer.AsParallelWriter(),
-                PrefabBuffer = prefabBuffer,
                 RandomIndex = UnityEngine.Random.Range(0, 99999),
                 DeltaTime = SystemAPI.Time.DeltaTime
             }.ScheduleParallel(_query, state.Dependency);
@@ -54,7 +49,7 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
                 data.Progress = 0;
 
                 var entities = new NativeArray<Entity>(data.Count, Allocator.Temp);
-                CommandBuffer.Instantiate(index, PrefabBuffer[data.PrefabIndex].Value, entities);
+                CommandBuffer.Instantiate(index, data.Prefab, entities);
 
                 int rows = (int) math.ceil((float) data.Count / data.Columns);
                 float offsetX = (data.Columns - 1) * data.Spacing * 0.5f;
@@ -80,28 +75,17 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
                     CommandBuffer.SetComponent(index, entity, new Demo3CombatData
                     {
                         Health = 100,
-                        Team = data.Faction,
                         CurrentCooldown = testRandom.NextFloat(0f, 1f),
                         CurrentAttackProfileIndex = 255,
                         HasDealtDamage = false,
                         LockedHeatmapCell = new int2(-1, -1),
-                        UnityType = data.PrefabIndex
+                        Team = data.Faction
                     });
-
-                    // offset trick
-                    /*CommandBuffer.SetComponent(index, entity, new AnimatorData
-                    {
-                        Index = data.PrefabIndex == 0
-                            ? AnimatorCastleGuard01.GreatSwordRun
-                            : AnimatorCastleGuard01.GreatSwordRun,
-                        Time = testRandom.NextFloat(0f, 2f)
-                    });*/
                 }
             }
 
             [ReadOnly] public int RandomIndex;
             public EntityCommandBuffer.ParallelWriter CommandBuffer;
-            [ReadOnly] public DynamicBuffer<AnimatorPrefabBuffer> PrefabBuffer;
             public float DeltaTime;
         }
     }

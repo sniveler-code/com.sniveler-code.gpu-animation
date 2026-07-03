@@ -169,7 +169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 50
   faction: 0
-  prefabIndex: 0
+  prefab: {fileID: 6251246437238198478, guid: 7cb34d653bddc0d4a9f0e1782dcc7819, type: 3}
   spawnTime: 8
   columns: 10
   spacing: 1
@@ -219,7 +219,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 33
   faction: 1
-  prefabIndex: 0
+  prefab: {fileID: 6251246437238198478, guid: 7cb34d653bddc0d4a9f0e1782dcc7819, type: 3}
   spawnTime: 10
   columns: 10
   spacing: 1
@@ -269,7 +269,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 33
   faction: 0
-  prefabIndex: 0
+  prefab: {fileID: 6251246437238198478, guid: 7cb34d653bddc0d4a9f0e1782dcc7819, type: 3}
   spawnTime: 10
   columns: 10
   spacing: 1
@@ -351,7 +351,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 50
   faction: 0
-  prefabIndex: 0
+  prefab: {fileID: 6251246437238198478, guid: 7cb34d653bddc0d4a9f0e1782dcc7819, type: 3}
   spawnTime: 8
   columns: 10
   spacing: 1
@@ -416,7 +416,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 33
   faction: 0
-  prefabIndex: 0
+  prefab: {fileID: 6251246437238198478, guid: 7cb34d653bddc0d4a9f0e1782dcc7819, type: 3}
   spawnTime: 10
   columns: 10
   spacing: 1
@@ -466,7 +466,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 33
   faction: 1
-  prefabIndex: 0
+  prefab: {fileID: 6251246437238198478, guid: 7cb34d653bddc0d4a9f0e1782dcc7819, type: 3}
   spawnTime: 10
   columns: 10
   spacing: 1
@@ -486,7 +486,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &658806825
 Transform:
   m_ObjectHideFlags: 0
@@ -563,7 +563,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 50
   faction: 0
-  prefabIndex: 0
+  prefab: {fileID: 6251246437238198478, guid: 7cb34d653bddc0d4a9f0e1782dcc7819, type: 3}
   spawnTime: 8
   columns: 10
   spacing: 1
@@ -613,7 +613,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 50
   faction: 1
-  prefabIndex: 0
+  prefab: {fileID: 6251246437238198478, guid: 7cb34d653bddc0d4a9f0e1782dcc7819, type: 3}
   spawnTime: 8
   columns: 10
   spacing: 1
@@ -695,7 +695,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 50
   faction: 1
-  prefabIndex: 0
+  prefab: {fileID: 6251246437238198478, guid: 7cb34d653bddc0d4a9f0e1782dcc7819, type: 3}
   spawnTime: 8
   columns: 10
   spacing: 1
@@ -730,7 +730,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1098476858
 Transform:
   m_ObjectHideFlags: 0
@@ -807,7 +807,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 50
   faction: 1
-  prefabIndex: 0
+  prefab: {fileID: 6251246437238198478, guid: 7cb34d653bddc0d4a9f0e1782dcc7819, type: 3}
   spawnTime: 8
   columns: 10
   spacing: 1
@@ -903,7 +903,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 33
   faction: 1
-  prefabIndex: 0
+  prefab: {fileID: 6251246437238198478, guid: 7cb34d653bddc0d4a9f0e1782dcc7819, type: 3}
   spawnTime: 10
   columns: 10
   spacing: 1
@@ -953,7 +953,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 33
   faction: 1
-  prefabIndex: 0
+  prefab: {fileID: 6251246437238198478, guid: 7cb34d653bddc0d4a9f0e1782dcc7819, type: 3}
   spawnTime: 10
   columns: 10
   spacing: 1
@@ -1003,7 +1003,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 33
   faction: 0
-  prefabIndex: 0
+  prefab: {fileID: 6251246437238198478, guid: 7cb34d653bddc0d4a9f0e1782dcc7819, type: 3}
   spawnTime: 10
   columns: 10
   spacing: 1
@@ -1036,8 +1036,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7bcf52ca2ca42cfac637333b0b39d72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animators:
-  - {fileID: 3504014016924658468, guid: 7cb34d653bddc0d4a9f0e1782dcc7819, type: 3}
+  matrices:
+  - {fileID: 11400000, guid: 16c36d4090c39004f8048a3f0744659c, type: 2}
 --- !u!4 &1251757618
 Transform:
   m_ObjectHideFlags: 0
@@ -1099,7 +1099,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 33
   faction: 0
-  prefabIndex: 0
+  prefab: {fileID: 6251246437238198478, guid: 7cb34d653bddc0d4a9f0e1782dcc7819, type: 3}
   spawnTime: 10
   columns: 10
   spacing: 1
@@ -1227,7 +1227,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 33
   faction: 1
-  prefabIndex: 0
+  prefab: {fileID: 6251246437238198478, guid: 7cb34d653bddc0d4a9f0e1782dcc7819, type: 3}
   spawnTime: 10
   columns: 10
   spacing: 1
@@ -1277,7 +1277,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 33
   faction: 1
-  prefabIndex: 0
+  prefab: {fileID: 6251246437238198478, guid: 7cb34d653bddc0d4a9f0e1782dcc7819, type: 3}
   spawnTime: 10
   columns: 10
   spacing: 1
@@ -1405,7 +1405,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 33
   faction: 0
-  prefabIndex: 0
+  prefab: {fileID: 6251246437238198478, guid: 7cb34d653bddc0d4a9f0e1782dcc7819, type: 3}
   spawnTime: 10
   columns: 10
   spacing: 1
@@ -1455,7 +1455,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   count: 33
   faction: 0
-  prefabIndex: 0
+  prefab: {fileID: 6251246437238198478, guid: 7cb34d653bddc0d4a9f0e1782dcc7819, type: 3}
   spawnTime: 10
   columns: 10
   spacing: 1

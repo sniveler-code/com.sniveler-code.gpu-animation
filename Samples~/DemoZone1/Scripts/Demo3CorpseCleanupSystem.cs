@@ -14,7 +14,6 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
         {
             _query = new EntityQueryBuilder(Allocator.Temp)
                 .WithAllRW<Demo3DeadData, LocalTransform>()
-                .WithNone<Demo3SpawnerTag>()
                 .Build(ref state);
 
             state.RequireForUpdate(_query);

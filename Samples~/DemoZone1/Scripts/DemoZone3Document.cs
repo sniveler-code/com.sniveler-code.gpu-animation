@@ -21,7 +21,9 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
         private struct HashMap
         {
             public int RedWarriors;
+
             public int BlueWarriors;
+
             // False Sharing
             public int4 Trash1;
             public int4 Trash2;
@@ -118,14 +120,17 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
             if (Time.frameCount % 16 != 0) return;
 
             var unitsQuery = _entityManager.CreateEntityQuery(typeof(Demo3CombatData));
-            var typeHandle = _entityManager.GetComponentTypeHandle<Demo3CombatData>(true);
+            var configHandle = _entityManager.GetComponentTypeHandle<Demo3UnitConfig>(true);
+            var combatHandle = _entityManager.GetComponentTypeHandle<Demo3CombatData>(true);
 
             const int workerCount = JobsUtility.MaxJobThreadCount + 1;
             var threadResults = new NativeArray<HashMap>(workerCount, Allocator.TempJob);
 
-            var job = new CalcHashChunkJob {
+            var job = new CalcHashChunkJob
+            {
                 ThreadResults = threadResults,
-                DataTypeHandle = typeHandle
+                ConfigHandle = configHandle,
+                CombatHandle = combatHandle
             }.ScheduleParallel(unitsQuery, default);
 
             job.Complete();
@@ -148,25 +153,27 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
         {
             [NativeDisableParallelForRestriction] public NativeArray<HashMap> ThreadResults;
             [NativeSetThreadIndex] private int _threadIndex;
-            [ReadOnly] public ComponentTypeHandle<Demo3CombatData> DataTypeHandle;
+            [ReadOnly] public ComponentTypeHandle<Demo3UnitConfig> ConfigHandle;
+            [ReadOnly] public ComponentTypeHandle<Demo3CombatData> CombatHandle;
 
             public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask,
                 in v128 chunkEnabledMask)
             {
-                NativeArray<Demo3CombatData> chunkData = chunk.GetNativeArray(ref DataTypeHandle);
+                var configArray = chunk.GetNativeArray(ref ConfigHandle);
+                var combatArray = chunk.GetNativeArray(ref CombatHandle);
                 var localStats = ThreadResults[_threadIndex];
 
-                foreach (Demo3CombatData combat in chunkData)
+                for (int i = 0; i < configArray.Length; i++)
                 {
-                    switch (combat)
+                    ref readonly Demo3UnitConfigBlob staticData = ref configArray[i].Value.Value;
+                    if (staticData.UnityType == Demo3UnitType.Melee && combatArray[i].Team == Demo3Faction.Blue)
                     {
-                        case {Team: Demo3Faction.Blue, UnityType: 0}:
-                            localStats.BlueWarriors++;
-                            break;
+                        localStats.BlueWarriors++;
+                    }
 
-                        case {Team: Demo3Faction.Red, UnityType: 0}:
-                            localStats.RedWarriors++;
-                            break;
+                    if (staticData.UnityType == Demo3UnitType.Melee && combatArray[i].Team == Demo3Faction.Red)
+                    {
+                        localStats.RedWarriors++;
                     }
                 }
 

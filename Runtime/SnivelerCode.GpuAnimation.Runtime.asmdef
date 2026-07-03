@@ -9,8 +9,7 @@
         "Unity.Entities.Graphics",
         "Unity.Entities.Hybrid",
         "Unity.Collections",
-        "Unity.Mathematics.Extensions",
-        "SnivelerCode.AiBehavior.Runtime"
+        "Unity.Mathematics.Extensions"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

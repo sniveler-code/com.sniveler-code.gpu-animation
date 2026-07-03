@@ -3,7 +3,6 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
-using System.Runtime.CompilerServices;
 using SnivelerCode.GpuAnimation.Runtime.Components;
 
 namespace SnivelerCode.GpuAnimation.Runtime.Systems
@@ -51,27 +50,27 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
                 float3 center = bounds.Value.Center;
                 float3 extents = bounds.Value.Extents;
 
-                bool isVisible =
-                    CheckPlane(Planes.P0, center, extents) &&
-                    CheckPlane(Planes.P1, center, extents) &&
-                    CheckPlane(Planes.P2, center, extents) &&
-                    CheckPlane(Planes.P3, center, extents) &&
-                    CheckPlane(Planes.P4, center, extents) &&
-                    CheckPlane(Planes.P5, center, extents);
+                float dot0 = math.dot(extents, math.abs(Planes.P0.xyz));
+                bool isVisible = math.dot(Planes.P0.xyz, center) + Planes.P0.w >= -dot0;
+
+                float dot1 = math.dot(extents, math.abs(Planes.P1.xyz));
+                isVisible &= math.dot(Planes.P1.xyz, center) + Planes.P1.w >= -dot1;
+
+                float dot2 = math.dot(extents, math.abs(Planes.P2.xyz));
+                isVisible &= math.dot(Planes.P2.xyz, center) + Planes.P2.w >= -dot2;
+
+                float dot3 = math.dot(extents, math.abs(Planes.P3.xyz));
+                isVisible &= math.dot(Planes.P3.xyz, center) + Planes.P3.w >= -dot3;
+
+                float dot4 = math.dot(extents, math.abs(Planes.P4.xyz));
+                isVisible &= math.dot(Planes.P4.xyz, center) + Planes.P4.w >= -dot4;
+
+                float dot5 = math.dot(extents, math.abs(Planes.P5.xyz));
+                isVisible &= math.dot(Planes.P5.xyz, center) + Planes.P5.w >= -dot5;
 
                 if (!isVisible) return;
 
-                if (RootOffsets.TryGetComponent(lod.Group, out var rootFrames))
-                {
-                    property.Value = rootFrames.Value;
-                }
-            }
-
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            private static bool CheckPlane(float4 plane, float3 center, float3 extents)
-            {
-                float dot = math.dot(extents, math.abs(plane.xyz));
-                return math.dot(plane.xyz, center) + plane.w >= -dot;
+                property.Value = RootOffsets[lod.Group].Value;
             }
 
             [ReadOnly] public AnimatorFrustumPlanes Planes;

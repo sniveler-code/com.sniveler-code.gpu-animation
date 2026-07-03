@@ -25,7 +25,7 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
                 .WithAllRW<LocalTransform, AnimatorData>()
                 .WithAllRW<Demo3CombatData>()
                 .WithAll<Demo3UnitConfig, AnimatorParameterData>()
-                .WithNone<Demo3DeadData, Demo3SpawnerTag>()
+                .WithNone<Demo3DeadData>()
                 .Build(ref state);
 
             DamageMailbox = new NativeParallelMultiHashMap<Entity, Demo3DamageMessage>
@@ -33,7 +33,6 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
 
             state.RequireForUpdate(_aliveUnitsQuery);
             state.RequireForUpdate<Demo3BattleData>();
-            state.RequireForUpdate<BeginInitializationEntityCommandBufferSystem.Singleton>();
         }
 
         [BurstCompile]
@@ -48,8 +47,6 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
             var hashSystem = state.WorldUnmanaged.GetExistingUnmanagedSystem<Demo3HashSystem>();
             var hashSystemRef = state.WorldUnmanaged.GetUnsafeSystemRef<Demo3HashSystem>(hashSystem);
             var battleData = SystemAPI.GetSingleton<Demo3BattleData>();
-            var ecbSingleton = SystemAPI.GetSingleton<BeginInitializationEntityCommandBufferSystem.Singleton>();
-            var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
 
             state.Dependency = new ClearMailboxJob
             {
@@ -125,6 +122,7 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
                 int2 microCell = new int2(math.floor(myPosXz / BattleConfig.MicroCellSize));
                 var rnd = Random.CreateFromIndex((uint) myEntity.Index + (uint) (animData.Time * 1000));
                 int enemiesFoundCount = 0;
+                ref readonly Demo3UnitConfigBlob staticData = ref config.Value.Value;
                 for (int x = -1; x <= 1; x++)
                 {
                     for (int y = -1; y <= 1; y++)
@@ -141,7 +139,7 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
 
                             if (otherData.Team == combat.Team)
                             {
-                                float minDistance = config.Radius * 2.0f;
+                                float minDistance = staticData.Radius * 2.0f;
                                 if (!(distSq > 0.0001f) || !(distSq < minDistance * minDistance)) continue;
                                 float dist = math.sqrt(distSq);
                                 float2 dirFromAlly = diff / dist;
@@ -191,12 +189,12 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
                         isAttacking = true;
 
                         if (!combat.HasDealtDamage &&
-                            animData.Index == config.Attacks.AnimationIndex &&
-                            animData.Frame >= config.Attacks.DamageFrame)
+                            animData.Index == staticData.Attacks.AnimationIndex &&
+                            animData.Frame >= staticData.Attacks.DamageFrame)
                         {
                             DamageWriter.Add(closestEnemy, new Demo3DamageMessage
                             {
-                                Amount = config.Attacks.Damage
+                                Amount = staticData.Attacks.Damage
                             });
 
                             combat.HasDealtDamage = true;
@@ -213,7 +211,7 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
                         if (combat.CurrentCooldown <= 0)
                         {
 
-                            if (closestEnemyDistSq <= config.Attacks.RangeSq)
+                            if (closestEnemyDistSq <= staticData.Attacks.RangeSq)
                             {
                                 selectedAttackIndex = 0;
                             }
@@ -223,10 +221,10 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
                         if (selectedAttackIndex >= 0)
                         {
                             isAttacking = true;
-                            animData.Play(config.Attacks.AnimationIndex);
-                            config.ParamSpeedIndex.Value(0f).Apply(animParams);
+                            animData.Play(staticData.Attacks.AnimationIndex);
+                            staticData.ParamSpeedIndex.Value(0f).Apply(animParams);
 
-                            combat.CurrentCooldown = config.Attacks.Cooldown + rnd.NextFloat(0.1f, 0.4f);
+                            combat.CurrentCooldown = staticData.Attacks.Cooldown + rnd.NextFloat(0.1f, 0.4f);
                             combat.CurrentAttackProfileIndex = (byte) selectedAttackIndex;
                             combat.HasDealtDamage = false;
 
@@ -235,7 +233,7 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
                         else
                         {
                             desiredDirXz = math.normalizesafe(dirToEnemy);
-                            bool inRangeOfAnyAttack = closestEnemyDistSq <= config.Attacks.RangeSq;
+                            bool inRangeOfAnyAttack = closestEnemyDistSq <= staticData.Attacks.RangeSq;
                             if (inRangeOfAnyAttack)
                             {
                                 isAttacking = true;
@@ -283,8 +281,8 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
                 float targetAnimSpeed = math.saturate(forwardProgress);
                 targetAnimSpeed = math.max(0f, targetAnimSpeed - trafficJamFactor * 1.5f);
 
-                config.ParamSpeedIndex
-                    .Value(math.lerp(animParams[config.ParamSpeedIndex].Value, targetAnimSpeed, DeltaTime * 10f))
+                staticData.ParamSpeedIndex
+                    .Value(math.lerp(animParams[staticData.ParamSpeedIndex].Value, targetAnimSpeed, DeltaTime * 10f))
                     .Apply(animParams);
             }
 

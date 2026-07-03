@@ -28,23 +28,31 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
         public int BlueCount;
     }
 
+    public enum Demo3UnitType : byte
+    {
+        Melee = 0,
+        Archer = 1
+    }
+
     public enum Demo3Faction : byte
     {
         Red = 0,
         Blue = 1
     }
 
-    public struct Demo3UnitConfig : IComponentData
+    public struct Demo3UnitConfigBlob
     {
-        public float Radius;
-        public byte ParamSpeedIndex;
-        public byte AnimationHitIndex;
-        public byte AnimationDeathIndex;
         public Demo3AttackProfile Attacks;
+        public float Radius;
+        public Demo3UnitType UnityType;
+        public byte AnimationHitIndex;
+        public byte ParamSpeedIndex;
+        public byte AnimationDeathIndex;
     }
 
-    public struct Demo3SpawnerTag : IComponentData
+    public struct Demo3UnitConfig : IComponentData
     {
+        public BlobAssetReference<Demo3UnitConfigBlob> Value;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
@@ -57,7 +65,15 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
         public Entity CurrentTarget;
         public int2 LockedHeatmapCell;
         public Demo3Faction Team;
-        public byte UnityType;
+    }
+
+    public struct Demo3FactionData : IComponentData
+    {
+        public Demo3Faction Value;
+    }
+
+    public struct Demo3SpawnerTag : IComponentData, IEnableableComponent
+    {
     }
 
     public struct Demo3DeadData : IComponentData, IEnableableComponent
