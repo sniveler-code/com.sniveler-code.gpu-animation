@@ -1,4 +1,5 @@
 ﻿using SnivelerCode.GpuAnimation.Runtime.Components;
+using SnivelerCode.GpuAnimation.Runtime.Utils;
 using Unity.Entities;
 using UnityEngine;
 
@@ -7,9 +8,6 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
     [UpdateInGroup(typeof(PresentationSystemGroup))]
     public sealed partial class AnimatorUploadSystem : SystemBase
     {
-        private static readonly int _snivelerInstanceAnimState =
-            Shader.PropertyToID("_SnivelerInstanceAnimState");
-
         private GraphicsBuffer _gpuStateBuffer0;
         private GraphicsBuffer _gpuStateBuffer1;
         private int _currentBufferCapacity;
@@ -51,7 +49,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
 
             var gpuBufferToBind = readIndex == 0 ? _gpuStateBuffer0 : _gpuStateBuffer1;
             gpuBufferToBind.SetData(arrayToUpload, 0, 0, indexState.Value);
-            Shader.SetGlobalBuffer(_snivelerInstanceAnimState, gpuBufferToBind);
+            Shader.SetGlobalBuffer(AnimationUtils.InstanceAnimState, gpuBufferToBind);
         }
     }
 }

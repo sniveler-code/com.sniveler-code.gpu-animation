@@ -2,11 +2,9 @@
 
 namespace SnivelerCode.GpuAnimation.Editor.Utils
 {
-
-
     public static class AnimatorStrings
     {
-        public const string RenderFrames = "_SnivelerRenderFrames";
+        public const string RenderFrames = "_SnivelerInstanceID";
         public const string LitTemplateName = "Sniveler_Lit_Template";
         public const string UnlitTemplateName = "Sniveler_Unlit_Template";
     }

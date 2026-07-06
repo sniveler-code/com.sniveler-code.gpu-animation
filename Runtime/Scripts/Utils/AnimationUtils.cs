@@ -12,6 +12,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Utils
         public static GraphicsBuffer DummyBuffer { get; private set; }
 
         public static int PropertyAnimBufferLbs => Shader.PropertyToID("_SnivelerAnimBufferLBS");
+        public static readonly int InstanceAnimState = Shader.PropertyToID("_SnivelerInstanceAnimState");
 
         public static float3x4 Compress(this Matrix4x4 matrix)
         {
