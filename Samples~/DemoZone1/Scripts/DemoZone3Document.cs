@@ -43,19 +43,26 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
         private long _lastFrameMemory;
         private long _currentAlloc;
 
+        private EntityQuery _unitsQuery;
+        private EntityQuery _queryRedWarriors;
+        private EntityQuery _queryBlueWarriors;
+
         private void Start()
         {
             _entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
-            var queryRedWarriors = _entityManager.CreateEntityQuery(
+            _queryRedWarriors = _entityManager.CreateEntityQuery(
                 typeof(Demo3SpawnerData),
                 typeof(Demo3DebugRedWarriorTag)
             );
 
-            var queryBlueWarriors = _entityManager.CreateEntityQuery(
+
+            _queryBlueWarriors = _entityManager.CreateEntityQuery(
                 typeof(Demo3SpawnerData),
                 typeof(Demo3DebugBlueWarriorTag)
             );
+
+            _unitsQuery = _entityManager.CreateEntityQuery(typeof(Demo3CombatData));
 
             var document = GetComponent<UIDocument>();
 
@@ -63,10 +70,10 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
             _gcLabel = document.rootVisualElement.Q<Label>("StatsGc");
 
             document.rootVisualElement.Q<Button>("blueWarriors").clicked += () =>
-                TriggerSpawner(queryBlueWarriors);
+                TriggerSpawner(_queryBlueWarriors);
 
             document.rootVisualElement.Q<Button>("redWarriors").clicked += () =>
-                TriggerSpawner(queryRedWarriors);
+                TriggerSpawner(_queryRedWarriors);
 
             _blueWarriorsCount = document.rootVisualElement.Q<Label>("blueWarriorsCount");
             _redWarriorsCount = document.rootVisualElement.Q<Label>("redWarriorsCount");
@@ -119,7 +126,6 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
         {
             if (Time.frameCount % 16 != 0) return;
 
-            var unitsQuery = _entityManager.CreateEntityQuery(typeof(Demo3CombatData));
             var configHandle = _entityManager.GetComponentTypeHandle<Demo3UnitConfig>(true);
             var combatHandle = _entityManager.GetComponentTypeHandle<Demo3CombatData>(true);
 
@@ -131,7 +137,7 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
                 ThreadResults = threadResults,
                 ConfigHandle = configHandle,
                 CombatHandle = combatHandle
-            }.ScheduleParallel(unitsQuery, default);
+            }.ScheduleParallel(_unitsQuery, default);
 
             job.Complete();
 

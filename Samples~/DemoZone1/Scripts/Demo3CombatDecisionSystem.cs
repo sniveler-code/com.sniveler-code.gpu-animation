@@ -3,6 +3,7 @@ using SnivelerCode.GpuAnimation.Runtime.Systems;
 using SnivelerCode.GpuAnimation.Runtime.Utils;
 using Unity.Burst;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
@@ -15,7 +16,7 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
     public partial struct Demo3CombatDecisionSystem : ISystem
     {
         private EntityQuery _aliveUnitsQuery;
-        public NativeParallelMultiHashMap<Entity, Demo3DamageMessage> DamageMailbox;
+        public NativeArray<int> DamageBuffer;
         public JobHandle MailboxWriterDependency;
 
         [BurstCompile]
@@ -28,53 +29,69 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
                 .WithNone<Demo3DeadData>()
                 .Build(ref state);
 
-            DamageMailbox = new NativeParallelMultiHashMap<Entity, Demo3DamageMessage>
-                (20000, Allocator.Persistent);
-
             state.RequireForUpdate(_aliveUnitsQuery);
             state.RequireForUpdate<Demo3BattleData>();
+            state.RequireForUpdate<AnimatorIndexState>();
         }
 
         [BurstCompile]
         public void OnDestroy(ref SystemState state)
         {
-            if (DamageMailbox.IsCreated) DamageMailbox.Dispose();
+            if (DamageBuffer.IsCreated) DamageBuffer.Dispose();
         }
 
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
+            var indexState = SystemAPI.GetSingleton<AnimatorIndexState>();
+            int requiredCapacity = indexState.Value;
+
+            if (requiredCapacity == 0) return;
+
+            if (!DamageBuffer.IsCreated || DamageBuffer.Length < requiredCapacity)
+            {
+                if (DamageBuffer.IsCreated) DamageBuffer.Dispose();
+                DamageBuffer = new NativeArray<int>((int) (requiredCapacity * 1.2f), Allocator.Persistent);
+            }
+
+            unsafe
+            {
+                UnsafeUtility.MemClear(DamageBuffer.GetUnsafePtr(), DamageBuffer.Length * 4);
+            }
+
             var hashSystem = state.WorldUnmanaged.GetExistingUnmanagedSystem<Demo3HashSystem>();
             var hashSystemRef = state.WorldUnmanaged.GetUnsafeSystemRef<Demo3HashSystem>(hashSystem);
             var battleData = SystemAPI.GetSingleton<Demo3BattleData>();
 
-            state.Dependency = new ClearMailboxJob
-            {
-                Mailbox = DamageMailbox
-            }.Schedule(state.Dependency);
-
             state.Dependency = new CombatDecisionJob
             {
                 DeltaTime = SystemAPI.Time.DeltaTime,
-                MicroMap = hashSystemRef.MicroMap.AsReadOnly(),
-                DamageWriter = DamageMailbox.AsParallelWriter(),
+                SortedSpatialData = hashSystemRef.SortedSpatialData.AsReadOnly(),
+                MicroGridOffsets = hashSystemRef.MicroGridOffsets.AsReadOnly(),
+                GridWidth = hashSystemRef.MicroGridWidth,
+                GridHeight = hashSystemRef.MicroGridHeight,
+                DamageBuffer = DamageBuffer,
                 BattleConfig = battleData,
-                Heatmap = hashSystemRef.Heatmap.AsReadOnly()
+                Heatmap = hashSystemRef.Heatmap.AsReadOnly(),
+                GpuIndices = SystemAPI.GetComponentLookup<AnimatorGpuIndex>(true)
             }.ScheduleParallel(_aliveUnitsQuery, state.Dependency);
 
             MailboxWriterDependency = state.Dependency;
         }
 
         [BurstCompile]
-        private struct ClearMailboxJob : IJob
+        private unsafe partial struct CombatDecisionJob : IJobEntity
         {
-            public NativeParallelMultiHashMap<Entity, Demo3DamageMessage> Mailbox;
-            public void Execute() => Mailbox.Clear();
-        }
+            public float DeltaTime;
+            [ReadOnly] public NativeArray<Demo3SpatialData>.ReadOnly SortedSpatialData;
+            [ReadOnly] public NativeArray<int2>.ReadOnly MicroGridOffsets;
+            public int GridWidth;
+            public int GridHeight;
+            [ReadOnly] public Demo3BattleData BattleConfig;
+            public NativeArray<HeatmapCell>.ReadOnly Heatmap;
+            [NativeDisableParallelForRestriction] public NativeArray<int> DamageBuffer;
+            [ReadOnly] public ComponentLookup<AnimatorGpuIndex> GpuIndices;
 
-        [BurstCompile]
-        private partial struct CombatDecisionJob : IJobEntity
-        {
             private void Execute(Entity myEntity, ref LocalTransform transform,
                 in Demo3UnitConfig config, ref Demo3CombatData combat, ref AnimatorData animData,
                 ref DynamicBuffer<AnimatorParameterData> animParams)
@@ -119,21 +136,32 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
                 float2 myForwardXz = combat.Team == Demo3Faction.Red ? new float2(1, 0) : new float2(-1, 0);
                 if (hasLockedTarget) myForwardXz = math.normalizesafe(closestEnemyPosXz - myPosXz);
 
-                int2 microCell = new int2(math.floor(myPosXz / BattleConfig.MicroCellSize));
+                float2 mapOffset = new float2(100f, 100f);
+                float2 posOffset = myPosXz + mapOffset;
+                int myCellX = math.clamp((int) math.floor(posOffset.x / BattleConfig.MicroCellSize), 0, GridWidth - 1);
+                int myCellY = math.clamp((int) math.floor(posOffset.y / BattleConfig.MicroCellSize), 0, GridHeight - 1);
+
                 var rnd = Random.CreateFromIndex((uint) myEntity.Index + (uint) (animData.Time * 1000));
                 int enemiesFoundCount = 0;
                 ref readonly Demo3UnitConfigBlob staticData = ref config.Value.Value;
+
                 for (int x = -1; x <= 1; x++)
                 {
                     for (int y = -1; y <= 1; y++)
                     {
-                        uint hash = math.hash(microCell + new int2(x, y));
-                        if (!MicroMap.TryGetFirstValue(hash, out var otherData, out var iterator)) continue;
+                        int nX = myCellX + x;
+                        int nY = myCellY + y;
+                        if (nX < 0 || nX >= GridWidth || nY < 0 || nY >= GridHeight) continue;
 
-                        do
+                        int cellIndex = nY * GridWidth + nX;
+                        int2 offsetData = MicroGridOffsets[cellIndex];
+                        int start = offsetData.x;
+                        int count = offsetData.y;
+
+                        for (int i = start; i < start + count; i++)
                         {
+                            var otherData = SortedSpatialData[i];
                             if (myEntity == otherData.Entity) continue;
-
                             float2 diff = myPosXz - otherData.Position;
                             float distSq = math.lengthsq(diff);
 
@@ -160,7 +188,7 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
                                     ref closestEnemy, ref closestEnemyPosXz, ref closestEnemyDistSq,
                                     ref lockedTargetFound, ref rnd, ref enemiesFoundCount);
                             }
-                        } while (MicroMap.TryGetNextValue(out otherData, ref iterator));
+                        }
                     }
                 }
 
@@ -192,10 +220,12 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
                             animData.Index == staticData.Attacks.AnimationIndex &&
                             animData.Frame >= staticData.Attacks.DamageFrame)
                         {
-                            DamageWriter.Add(closestEnemy, new Demo3DamageMessage
+                            if (GpuIndices.TryGetComponent(closestEnemy, out var targetGpuIndex))
                             {
-                                Amount = staticData.Attacks.Damage
-                            });
+                                int dmgInt = (int) (staticData.Attacks.Damage * 100f);
+                                System.Threading.Interlocked.Add(
+                                    ref ((int*) DamageBuffer.GetUnsafePtr())[targetGpuIndex.Value], dmgInt);
+                            }
 
                             combat.HasDealtDamage = true;
                         }
@@ -210,7 +240,6 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
                         int selectedAttackIndex = -1;
                         if (combat.CurrentCooldown <= 0)
                         {
-
                             if (closestEnemyDistSq <= staticData.Attacks.RangeSq)
                             {
                                 selectedAttackIndex = 0;
@@ -320,12 +349,6 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
                     }
                 }
             }
-
-            public float DeltaTime;
-            [ReadOnly] public NativeParallelMultiHashMap<uint, Demo3SpatialData>.ReadOnly MicroMap;
-            public NativeParallelMultiHashMap<Entity, Demo3DamageMessage>.ParallelWriter DamageWriter;
-            [ReadOnly] public Demo3BattleData BattleConfig;
-            public NativeArray<HeatmapCell>.ReadOnly Heatmap;
         }
     }
 }

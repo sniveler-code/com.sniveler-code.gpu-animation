@@ -39,17 +39,17 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
             public float DeltaTime;
             public EntityCommandBuffer.ParallelWriter CommandBuffer;
 
-            private void Execute([EntityIndexInQuery] int sortKey, Entity entity,
-                ref Demo3DeadData data, ref LocalTransform transform)
+            private void Execute([ChunkIndexInQuery] int chunkIndex, Entity entity,
+                ref Demo3DeadData data, RefRW<LocalTransform> transform)
             {
                 data.Progress += DeltaTime;
                 if (data.Progress < 5.0f) return;
 
                 float sinkProgress = (data.Progress - 5.0f) / 2f;
-                transform.Position.y -= DeltaTime * 1.0f;
+                transform.ValueRW.Position.y -= DeltaTime * 1.0f;
                 if (sinkProgress >= 1.0f)
                 {
-                    CommandBuffer.DestroyEntity(sortKey, entity);
+                    CommandBuffer.DestroyEntity(chunkIndex, entity);
                 }
             }
         }

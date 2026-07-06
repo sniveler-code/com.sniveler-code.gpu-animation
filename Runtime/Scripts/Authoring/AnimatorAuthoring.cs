@@ -25,7 +25,6 @@ namespace SnivelerCode.GpuAnimation.Runtime.Authoring
                 blobAsset.MatricesHash = data.Matrices.GetInstanceID();
 
                 Entity entity = GetEntity(TransformUsageFlags.Dynamic);
-                AddComponent(entity, new AnimatorBakeLodsData {Frame = data.Animations[data.DefaultAnimation].Start});
 
                 uint triggerMask = 0;
                 var paramsBuffer = AddBuffer<AnimatorParameterData>(entity);
@@ -38,7 +37,6 @@ namespace SnivelerCode.GpuAnimation.Runtime.Authoring
 
                 blobAsset.TriggerMask = triggerMask;
 
-                // bake animations
                 BlobBuilderArray<BlobAnimationAsset> animationArray =
                     builder.Allocate(ref blobAsset.Animations, data.Animations.Count);
                 for (int i = 0; i < animationArray.Length; ++i)
@@ -75,7 +73,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Authoring
 
                 AddBlobAsset(ref blobAssetReference, out _);
                 AddComponent(entity, new BlobAnimatorData {Value = blobAssetReference});
-                AddComponent<AnimatorOffsetData>(entity);
+                AddComponent(entity, new AnimatorGpuIndex {Value = 0});
                 AddComponent(entity, new AnimatorData {Index = data.DefaultAnimation});
             }
         }

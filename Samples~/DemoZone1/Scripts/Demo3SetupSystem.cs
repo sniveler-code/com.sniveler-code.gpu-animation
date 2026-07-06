@@ -29,7 +29,7 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
-            if (_query.IsEmpty) return;
+            if(_query.IsEmpty) return;
             var ecbSingleton = SystemAPI.GetSingleton<BeginInitializationEntityCommandBufferSystem.Singleton>();
             var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
 

@@ -41,7 +41,6 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
             {
                 int matricesHash = data.ValueRO.Value.Value.MatricesHash;
                 if (!hashesLookup.ContainsKey(matricesHash)) continue;
-
                 data.ValueRW.Offset = hashesLookup[matricesHash];
                 updatedEntities.Add(entity, hashesLookup[matricesHash]);
                 entityCount++;
@@ -55,21 +54,12 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
                          .WithOptions(EntityQueryOptions.IncludePrefab | EntityQueryOptions.IncludeDisabledEntities)
                          .WithEntityAccess())
             {
-                if (!updatedEntities.TryGetValue(lod.ValueRO.Group, out uint prefabOffset)) continue;
-                if (!state.EntityManager.HasComponent<AnimatorBakeLodsData>(lod.ValueRO.Group)) continue;
-                var lodsData = state.EntityManager.GetComponentData<AnimatorBakeLodsData>(lod.ValueRO.Group);
-
-                uint startFrame = prefabOffset + lodsData.Frame;
-                ecb.AddComponent(entity, new SnivelerMaterialFrames
-                    {Value = new float4(startFrame, startFrame, 1, 1)});
-
-                ecb.AddComponent(entity, new SnivelerMaterialFramesTarget
-                    {Value = new float4(startFrame, startFrame, 1, 1)});
-
-                ecb.AddComponent(entity, new SnivelerMaterialBaseColor
-                    {Value = new float4(1, 1, 1, 1)});
+                ecb.AddComponent(entity, new SnivelerMaterialBaseColor {Value = new float4(1, 1, 1, 1)});
 
                 ecb.AddComponent<AnimatorLodTag>(entity);
+                ecb.SetComponentEnabled<AnimatorLodTag>(entity, false);
+                ecb.AddComponent<SnivelerInstanceID>(entity);
+
                 lodsCount++;
             }
 

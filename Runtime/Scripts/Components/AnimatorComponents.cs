@@ -1,6 +1,5 @@
 using System.Runtime.InteropServices;
 using Unity.Entities;
-using Unity.Mathematics;
 
 namespace SnivelerCode.GpuAnimation.Runtime.Components
 {
@@ -18,9 +17,22 @@ namespace SnivelerCode.GpuAnimation.Runtime.Components
         public byte Index;
     }
 
-    public struct AnimatorOffsetData : IComponentData
+    public struct GpuInstanceAnimState
     {
-        public float4 Value;
+        public uint FrameA0;
+        public uint FrameA1;
+        public float LerpA;
+        public uint Padding;
+    }
+
+    public struct AnimatorGpuIndex : ICleanupComponentData
+    {
+        public ushort Value;
+    }
+
+    public struct AnimatorIndexState : IComponentData
+    {
+        public ushort Value;
     }
 
     [InternalBufferCapacity(8)]
@@ -29,13 +41,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Components
         public float Value;
     }
 
-    public struct AnimatorLodTag : IComponentData
+    public struct AnimatorLodTag : IComponentData, IEnableableComponent
     {
-    }
-
-    [TemporaryBakingType]
-    public struct AnimatorBakeLodsData : IComponentData
-    {
-        public uint Frame;
     }
 }

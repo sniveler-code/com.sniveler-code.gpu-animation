@@ -9,7 +9,7 @@ void ApplySnivelerAnimation_float(
     float3 TangentOS,
     float4 BoneIndices,
     float4 BoneWeights,
-    float4 FramesA,
+    float InstanceID,
     out float3 OutPositionOS,
     out float3 OutNormalOS,
     out float3 OutTangentOS)
@@ -27,7 +27,7 @@ void ApplySnivelerAnimation_float(
         OutTangentOS,
         BoneIndices,
         BoneWeights,
-        FramesA
+        (uint)InstanceID
     );
     #endif
 

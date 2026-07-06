@@ -18,7 +18,7 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
         {
             _query = new EntityQueryBuilder(Allocator.Temp)
                 .WithAllRW<Demo3CombatData, AnimatorData>()
-                .WithAll<Demo3UnitConfig>()
+                .WithAll<Demo3UnitConfig, AnimatorGpuIndex>()
                 .WithNone<Demo3DeadData>()
                 .Build(ref state);
 
@@ -35,16 +35,13 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
             var decisionSystem = state.WorldUnmanaged.GetExistingUnmanagedSystem<Demo3CombatDecisionSystem>();
             ref var combatSys = ref state.WorldUnmanaged.GetUnsafeSystemRef<Demo3CombatDecisionSystem>(decisionSystem);
 
-            var mailbox = combatSys.DamageMailbox;
-            var mailboxDependency = combatSys.MailboxWriterDependency;
-
             var combinedDependency = Unity.Jobs.JobHandle
-                .CombineDependencies(state.Dependency, mailboxDependency);
+                .CombineDependencies(state.Dependency, combatSys.MailboxWriterDependency);
 
             state.Dependency = new ProcessDamageJob
             {
                 CommandBuffer = ecb.AsParallelWriter(),
-                DamageMailbox = mailbox.AsReadOnly()
+                DamageBuffer = combatSys.DamageBuffer.AsReadOnly()
             }.ScheduleParallel(_query, combinedDependency);
         }
 
@@ -52,23 +49,23 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
         [WithNone(typeof(Demo3DeadData))]
         public partial struct ProcessDamageJob : IJobEntity
         {
-            private void Execute([EntityIndexInQuery] int sortKey, Entity entity,
-                in Demo3UnitConfig config, ref Demo3CombatData combat, ref AnimatorData animator)
+            private void Execute([ChunkIndexInQuery] int chunkIndex, Entity entity,
+                in Demo3UnitConfig config, in AnimatorGpuIndex gpuIndex,
+                ref Demo3CombatData combat, ref AnimatorData animator)
             {
-                if (!DamageMailbox.TryGetFirstValue(entity, out Demo3DamageMessage msg, out var iterator)) return;
+                if (gpuIndex.Value >= DamageBuffer.Length) return;
 
-                float totalDamage = 0f;
-                do
-                {
-                    totalDamage += msg.Amount;
-                } while (DamageMailbox.TryGetNextValue(out msg, ref iterator));
+                int dmgInt = DamageBuffer[gpuIndex.Value];
+                if (dmgInt == 0) return;
 
+                float totalDamage = dmgInt / 100f;
                 combat.Health -= totalDamage;
+
                 ref readonly Demo3UnitConfigBlob staticData = ref config.Value.Value;
 
                 if (combat.Health <= 0)
                 {
-                    CommandBuffer.SetComponentEnabled<Demo3DeadData>(sortKey, entity, true);
+                    CommandBuffer.SetComponentEnabled<Demo3DeadData>(chunkIndex, entity, true);
                     animator.Play(staticData.AnimationDeathIndex);
                 }
                 else
@@ -81,7 +78,7 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
             }
 
             public EntityCommandBuffer.ParallelWriter CommandBuffer;
-            [ReadOnly] public NativeParallelMultiHashMap<Entity, Demo3DamageMessage>.ReadOnly DamageMailbox;
+            public NativeArray<int>.ReadOnly DamageBuffer;
         }
     }
 }

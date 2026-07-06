@@ -47,5 +47,4 @@ namespace SnivelerCode.GpuAnimation.Runtime.Components
         public BlobArray<uint> Offsets;
         public BlobArray<int> Hashes;
     }
-
 }

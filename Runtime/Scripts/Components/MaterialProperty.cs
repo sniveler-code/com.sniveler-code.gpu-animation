@@ -4,16 +4,10 @@ using Unity.Rendering;
 
 namespace SnivelerCode.GpuAnimation.Runtime.Components
 {
-    [MaterialProperty("_SnivelerRenderFrames")]
-    public struct SnivelerMaterialFrames : IComponentData
+    [MaterialProperty("_SnivelerInstanceID")]
+    public struct SnivelerInstanceID : IComponentData
     {
-        public float4 Value;
-    }
-
-    [MaterialProperty("_SnivelerRenderFramesTarget")]
-    public struct SnivelerMaterialFramesTarget : IComponentData
-    {
-        public float4 Value;
+        public float Value;
     }
 
     [MaterialProperty("_BaseColor")]

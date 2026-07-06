@@ -40,6 +40,7 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
         Blue = 1
     }
 
+
     public struct Demo3UnitConfigBlob
     {
         public Demo3AttackProfile Attacks;
@@ -83,6 +84,7 @@ namespace SnivelerCode.GpuAnimation.DemoZone3
 
     public struct Demo3SpatialData
     {
+        public int CellIndex;
         public Entity Entity;
         public float2 Position;
         public Demo3Faction Team;
