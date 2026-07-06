@@ -39,7 +39,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
                 tempArrayLbs.Dispose();
 
                 if (_gpuBufferLbs == null || !_gpuBufferLbs.IsValid()) return;
-                Shader.SetGlobalBuffer(AnimationUtils.PropertyAnimBufferLbs, _gpuBufferLbs);
+                Shader.SetGlobalBuffer(AnimatorUtils.AnimBufferLbs, _gpuBufferLbs);
 
 #if UNITY_EDITOR
                 long totalBytes = (long) lengthLbs * 48;
@@ -56,7 +56,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
 
         protected override void OnStopRunning()
         {
-            Shader.SetGlobalBuffer(AnimationUtils.PropertyAnimBufferLbs, AnimationUtils.DummyBuffer);
+            AnimatorUtils.SetDummyBuffer();
             DisposeSystem();
         }
 

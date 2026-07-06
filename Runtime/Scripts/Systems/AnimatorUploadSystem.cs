@@ -49,7 +49,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
 
             var gpuBufferToBind = readIndex == 0 ? _gpuStateBuffer0 : _gpuStateBuffer1;
             gpuBufferToBind.SetData(arrayToUpload, 0, 0, indexState.Value);
-            Shader.SetGlobalBuffer(AnimationUtils.InstanceAnimState, gpuBufferToBind);
+            Shader.SetGlobalBuffer(AnimatorUtils.AnimBufferState, gpuBufferToBind);
         }
     }
 }

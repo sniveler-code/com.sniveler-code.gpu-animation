@@ -27,7 +27,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
 
             using var ecb = new EntityCommandBuffer(Allocator.Temp);
             ref var blobData = ref sceneConfig.Blob.Value;
-            var hashesLookup = new NativeHashMap<int, uint>(256, Allocator.Temp);
+            var hashesLookup = new NativeHashMap<ulong, uint>(256, Allocator.Temp);
             for (int i = 0; i < blobData.Hashes.Length; i++)
             {
                 hashesLookup[blobData.Hashes[i]] = blobData.Offsets[i];
@@ -39,7 +39,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
                          .WithOptions(EntityQueryOptions.IncludePrefab | EntityQueryOptions.IncludeDisabledEntities)
                          .WithEntityAccess())
             {
-                int matricesHash = data.ValueRO.Value.Value.MatricesHash;
+                ulong matricesHash = data.ValueRO.Value.Value.MatricesHash;
                 if (!hashesLookup.ContainsKey(matricesHash)) continue;
                 data.ValueRW.Offset = hashesLookup[matricesHash];
                 updatedEntities.Add(entity, hashesLookup[matricesHash]);
@@ -50,7 +50,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Systems
             AnimatorLogger.LogManaged($"Entity Updated: {entityCount}");
 
             int lodsCount = 0;
-            foreach ((RefRO<MeshLODComponent> lod, Entity entity) in SystemAPI.Query<RefRO<MeshLODComponent>>()
+            foreach ((RefRO<MeshLODComponent> _, Entity entity) in SystemAPI.Query<RefRO<MeshLODComponent>>()
                          .WithOptions(EntityQueryOptions.IncludePrefab | EntityQueryOptions.IncludeDisabledEntities)
                          .WithEntityAccess())
             {

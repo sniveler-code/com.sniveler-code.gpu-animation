@@ -22,7 +22,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Authoring
                 ref BlobAnimatorAsset blobAsset = ref builder.ConstructRoot<BlobAnimatorAsset>();
 
                 blobAsset.BoneCount = (byte) data.BonesCount;
-                blobAsset.MatricesHash = data.Matrices.GetInstanceID();
+                blobAsset.MatricesHash = data.Matrices.UniqueId;
 
                 Entity entity = GetEntity(TransformUsageFlags.Dynamic);
 

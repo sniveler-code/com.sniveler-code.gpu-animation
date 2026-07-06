@@ -6,8 +6,11 @@ using UnityEngine;
 
 namespace SnivelerCode.GpuAnimation.Runtime.Utils
 {
-    public static class AnimationUtils
+    public static class AnimatorUtils
     {
+        public static readonly int AnimBufferLbs = Shader.PropertyToID("_SnivelerAnimBufferLBS");
+        public static readonly int AnimBufferState = Shader.PropertyToID("_SnivelerInstanceAnimState");
+
         private static readonly DummyBuffer _buffer = new();
 
         public static float3x4 Compress(this Matrix4x4 matrix)

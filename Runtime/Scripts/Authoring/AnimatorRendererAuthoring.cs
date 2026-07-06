@@ -18,7 +18,7 @@ namespace SnivelerCode.GpuAnimation.Runtime.Authoring
             {
                 if (rendererAuthoring.matrices == null) return;
 
-                var hashes = new Dictionary<int, uint>();
+                var hashes = new Dictionary<ulong, uint>();
                 var validMatrices = rendererAuthoring.matrices
                     .Where(a => a != null && a.MatricesLbs != null).ToArray();
 
@@ -43,13 +43,12 @@ namespace SnivelerCode.GpuAnimation.Runtime.Authoring
                 for (int i = 0; i < validMatrices.Length; i++)
                 {
                     var matrices = validMatrices[i];
-                    int hashInstance = matrices.GetInstanceID();
-                    if(hashes.ContainsKey(hashInstance)) continue;
+                    if(hashes.ContainsKey(matrices.UniqueId)) continue;
 
                     uint currentOffset = currentOffsetLbs;
                     offsets[i] = currentOffset;
-                    blobHashes[i] = hashInstance;
-                    hashes[hashInstance] = currentOffset;
+                    blobHashes[i] = matrices.UniqueId;
+                    hashes[matrices.UniqueId] = currentOffset;
 
                     var src = matrices.MatricesLbs;
                     for (int m = 0; m < src.Length; m++)
