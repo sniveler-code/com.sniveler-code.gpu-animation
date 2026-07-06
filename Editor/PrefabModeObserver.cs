@@ -1,4 +1,5 @@
 ﻿using System;
+using SnivelerCode.GpuAnimation.Editor.Utils;
 using SnivelerCode.GpuAnimation.Runtime.Authoring;
 using SnivelerCode.GpuAnimation.Runtime.Utils;
 using Unity.Collections;
@@ -6,6 +7,7 @@ using Unity.Mathematics;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using AnimatorUtils = SnivelerCode.GpuAnimation.Runtime.Utils.AnimatorUtils;
 
 namespace SnivelerCode.GpuAnimation.Editor
 {
@@ -16,7 +18,7 @@ namespace SnivelerCode.GpuAnimation.Editor
 
         static PrefabModeObserver()
         {
-            AnimationUtils.InitDummyBuffer();
+            AnimatorUtils.InitDummyBuffer();
             PrefabStage.prefabStageOpened += OnPrefabStageOpened;
             PrefabStage.prefabStageClosing += OnPrefabStageClosing;
             AppDomain.CurrentDomain.DomainUnload += OnDomainUnload;
@@ -27,6 +29,8 @@ namespace SnivelerCode.GpuAnimation.Editor
             GameObject root = prefabStage.prefabContentsRoot;
             var animator = root.GetComponent<AnimatorAuthoring>();
             if (animator == null) return;
+
+            TogglePropertyBlock(animator, 1f);
 
             if (animator.Matrices.MatricesLbs.Length > 0)
             {
@@ -43,7 +47,7 @@ namespace SnivelerCode.GpuAnimation.Editor
                 tempArrayLbs.Dispose();
 
                 if (_gpuBufferLbs == null || !_gpuBufferLbs.IsValid()) return;
-                Shader.SetGlobalBuffer(AnimationUtils.PropertyAnimBufferLbs, _gpuBufferLbs);
+                Shader.SetGlobalBuffer(AnimatorUtils.AnimBufferLbs, _gpuBufferLbs);
             }
         }
 
@@ -51,11 +55,29 @@ namespace SnivelerCode.GpuAnimation.Editor
 
         private static void OnPrefabStageClosing(PrefabStage prefabStage)
         {
-            Shader.SetGlobalBuffer(AnimationUtils.PropertyAnimBufferLbs, AnimationUtils.DummyBuffer);
+            AnimatorUtils.SetDummyBuffer();
+
             if (_gpuBufferLbs != null)
             {
                 _gpuBufferLbs.Dispose();
                 _gpuBufferLbs = null;
+            }
+
+            GameObject root = prefabStage.prefabContentsRoot;
+            var animator = root.GetComponent<AnimatorAuthoring>();
+            if (animator == null) return;
+            TogglePropertyBlock(animator, 0);
+        }
+
+        private static void TogglePropertyBlock(AnimatorAuthoring animator, float value)
+        {
+            var renderers = animator.GetComponentsInChildren<Renderer>(true);
+            foreach (var r in renderers)
+            {
+                var propertyBlock = new MaterialPropertyBlock();
+                r.GetPropertyBlock(propertyBlock);
+                propertyBlock.SetFloat(AnimatorShaderProperty.InstanceID, value);
+                r.SetPropertyBlock(propertyBlock);
             }
         }
 
@@ -67,7 +89,7 @@ namespace SnivelerCode.GpuAnimation.Editor
                 _gpuBufferLbs = null;
             }
 
-            AnimationUtils.ReleaseDummyBuffer();
+            AnimatorUtils.ReleaseDummyBuffer();
         }
     }
 }

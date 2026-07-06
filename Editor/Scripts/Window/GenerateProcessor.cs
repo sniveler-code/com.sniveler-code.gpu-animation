@@ -17,7 +17,7 @@ using Object = UnityEngine.Object;
 
 namespace SnivelerCode.GpuAnimation.Editor.Window
 {
-    public sealed class GenerateProcessor
+    internal sealed class GenerateProcessor
     {
         private readonly Shader[] _shaders;
         private readonly IAnimationBaker _baker;
@@ -57,9 +57,16 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
                 var world = World.DefaultGameObjectInjectionWorld;
                 if (world != null)
                 {
-                    SubScene[] subScenes = Object.FindObjectsByType<SubScene>
-                        (FindObjectsInactive.Include, FindObjectsSortMode.None);
+#if UNITY_6000_0_OR_NEWER
+                    SubScene[] subScenes = Object.FindObjectsByType<SubScene>(FindObjectsInactive.Include);
 
+#elif UNITY_2023_1_OR_NEWER
+                    SubScene[] subScenes = Object.FindObjectsByType<SubScene>(
+                        FindObjectsInactive.Include,
+                        FindObjectsSortMode.None);
+#else
+                    SubScene[] subScenes = Object.FindObjectsOfType<SubScene>(true);
+#endif
                     foreach (SubScene subScene in subScenes)
                     {
                         if (subScene.SceneGUID.Equals(default)) continue;
@@ -74,7 +81,7 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
                 _fileSystem.ForceDirectory(folderResources);
 
                 // 1. Bake Animations and Bones
-                Shader.SetGlobalBuffer(AnimationUtils.PropertyAnimBufferLbs, AnimationUtils.DummyBuffer);
+                AnimatorUtils.SetDummyBuffer();
                 bakeResult = _baker.BakeAnimations(instance);
 
                 List<MonoBlobAnimator> animations = bakeResult.Animations;

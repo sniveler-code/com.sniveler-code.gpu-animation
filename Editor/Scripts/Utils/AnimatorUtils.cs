@@ -22,8 +22,7 @@ namespace SnivelerCode.GpuAnimation.Editor.Utils
 
         public static readonly int BaseMapId = Shader.PropertyToID("_BaseMap");
         public static readonly int MainTexId = Shader.PropertyToID("_MainTex");
-
-        public static readonly int RenderFramesId = Shader.PropertyToID(AnimatorStrings.RenderFrames);
+        public static int InstanceID => Shader.PropertyToID(AnimatorStrings.RenderFrames);
     }
 
     public static class AnimatorUtils

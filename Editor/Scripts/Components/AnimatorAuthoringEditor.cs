@@ -2,11 +2,10 @@
 using SnivelerCode.GpuAnimation.Editor.Utils;
 using SnivelerCode.GpuAnimation.Runtime.Authoring;
 using SnivelerCode.GpuAnimation.Runtime.Components;
-using SnivelerCode.GpuAnimation.Runtime.Utils;
-using Unity.Collections;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using AnimatorUtils = SnivelerCode.GpuAnimation.Runtime.Utils.AnimatorUtils;
 
 #if UNITY_EDITOR
 
@@ -16,9 +15,7 @@ namespace SnivelerCode.GpuAnimation.Editor.Components
     public sealed class AnimatorAuthoringEditor : UnityEditor.Editor
     {
         private int _animationIndex;
-        private int _currentFrame;
-        private GraphicsBuffer _gpuStateBuffer0;
-        private NativeArray<GpuInstanceAnimState> _array0;
+        private int _currentFrame = -1;
         private Material _material;
 
         private void OnSceneGUI()
@@ -57,25 +54,13 @@ namespace SnivelerCode.GpuAnimation.Editor.Components
 
                 if (mesh == null) continue;
 
-                _material ??= AnimatorUtils.GetDebugMaterial();
+                _material ??= Utils.AnimatorUtils.GetDebugMaterial();
                 _material.SetPass(0);
 
                 GL.wireframe = true;
                 Graphics.DrawMeshNow(mesh, renderer.transform.localToWorldMatrix);
                 GL.wireframe = false;
             }
-        }
-
-        private void OnEnable()
-        {
-            _array0 = new NativeArray<GpuInstanceAnimState>(1, Allocator.Persistent);
-            _gpuStateBuffer0 = new GraphicsBuffer(GraphicsBuffer.Target.Structured, 1, 16);
-        }
-
-        private void OnDisable()
-        {
-            _gpuStateBuffer0?.Dispose();
-            if (_array0.IsCreated) _array0.Dispose();
         }
 
         public override void OnInspectorGUI()
@@ -106,7 +91,7 @@ namespace SnivelerCode.GpuAnimation.Editor.Components
             if (nextAnimation != _animationIndex)
             {
                 _animationIndex = nextAnimation;
-                _currentFrame = 0;
+                _currentFrame = -1;
             }
 
             var currentAnim = animator.Animations[_animationIndex];
@@ -117,21 +102,15 @@ namespace SnivelerCode.GpuAnimation.Editor.Components
                 _currentFrame = currentFrame;
             }
 
-            if (!EditorGUI.EndChangeCheck()) return;
-            if (!_gpuStateBuffer0.IsValid()) return;
-
             uint boneCount = (uint) animator.BonesCount;
             uint frameOffset = (uint) (currentAnim.Start + _currentFrame * boneCount);
 
-            _array0[0] = new GpuInstanceAnimState
+            AnimatorUtils.SetDummyBuffer(new GpuInstanceAnimState
             {
                 FrameA0 = frameOffset,
                 FrameA1 = frameOffset,
                 LerpA = 0f
-            };
-
-            _gpuStateBuffer0.SetData(_array0, 0, 0, 1);
-            Shader.SetGlobalBuffer(AnimationUtils.InstanceAnimState, _gpuStateBuffer0);
+            });
 
             EditorApplication.delayCall = SceneView.RepaintAll;
         }

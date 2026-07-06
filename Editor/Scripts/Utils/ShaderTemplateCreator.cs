@@ -6,9 +6,27 @@ using UnityEngine;
 
 namespace SnivelerCode.GpuAnimation.Editor.Utils
 {
-    public sealed class CreateShaderGraphAction : EndNameEditAction
+#if UNITY_6000_0_OR_NEWER || UNITY_2023_3_OR_NEWER
+    public sealed partial class CreateShaderGraphAction : AssetCreationEndAction
+    {
+        public override void Action(EntityId instanceId, string pathName, string resourceFile)
+        {
+            ProcessAction(pathName, resourceFile);
+        }
+    }
+#else
+    public sealed partial class CreateShaderGraphAction : EndNameEditAction
     {
         public override void Action(int instanceId, string pathName, string resourceFile)
+        {
+            ProcessAction(pathName, resourceFile);
+        }
+    }
+#endif
+
+    public sealed partial class CreateShaderGraphAction
+    {
+        private void ProcessAction(string pathName, string resourceFile)
         {
             File.Copy(resourceFile, pathName);
             AssetDatabase.ImportAsset(pathName);
@@ -45,7 +63,7 @@ namespace SnivelerCode.GpuAnimation.Editor.Utils
 
             string templatePath = AssetDatabase.GUIDToAssetPath(guids[0]);
             ProjectWindowUtil.StartNameEditingIfProjectWindowExists(
-                0,
+                default,
                 ScriptableObject.CreateInstance<CreateShaderGraphAction>(),
                 defaultFileName,
                 null,
