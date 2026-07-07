@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace SnivelerCode.GpuAnimation.Editor.Utils
 {
-#if UNITY_6000_0_OR_NEWER || UNITY_2023_3_OR_NEWER
+#if UNITY_6000_5_OR_NEWER
     public sealed partial class CreateShaderGraphAction : AssetCreationEndAction
     {
         public override void Action(EntityId instanceId, string pathName, string resourceFile)

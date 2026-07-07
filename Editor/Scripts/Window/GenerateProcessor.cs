@@ -57,10 +57,7 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
                 var world = World.DefaultGameObjectInjectionWorld;
                 if (world != null)
                 {
-#if UNITY_6000_0_OR_NEWER
-                    SubScene[] subScenes = Object.FindObjectsByType<SubScene>(FindObjectsInactive.Include);
-
-#elif UNITY_2023_1_OR_NEWER
+#if UNITY_2023_1_OR_NEWER
                     SubScene[] subScenes = Object.FindObjectsByType<SubScene>(
                         FindObjectsInactive.Include,
                         FindObjectsSortMode.None);
