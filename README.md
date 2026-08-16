@@ -7,10 +7,25 @@
 [![Unity](https://img.shields.io/badge/Unity-2022.2%2B%20%7C%206-black?style=flat-square&logo=unity)](https://unity.com/)
 [![Render Pipeline](https://img.shields.io/badge/Pipeline-URP-blue?style=flat-square)](#)
 [![ECS](https://img.shields.io/badge/Architecture-DOTS-brightgreen?style=flat-square)](#)
+[![Asset Store](https://img.shields.io/badge/Unity%20Asset%20Store-FREE-0071C5?style=flat-square&logo=unity)](https://assetstore.unity.com/packages/slug/246164)
 
 *Render thousands of animated units at maximum FPS with zero CPU bottlenecks.*
 
 </div>
+
+---
+
+<div align="center">
+
+## 🎬 Watch Demo Video
+
+[![GPU Animation Entities Demo](https://img.youtube.com/vi/sogIzpqWpns/maxresdefault.jpg)](https://youtu.be/sogIzpqWpns)
+
+**[▶ Click to watch on YouTube](https://youtu.be/sogIzpqWpns)**
+
+</div>
+
+---
 
 ---
 
@@ -29,21 +44,45 @@ Built specifically for the Universal Render Pipeline (URP), this asset bypasses 
 
 Follow these steps to get **GPU Animation Entities LITE** running in your project.
 
-**1. Install Required Packages**
+### 📦 Install Required Packages
 Ensure your project is using the Universal Render Pipeline (URP) and has the necessary DOTS packages installed. Open the Package Manager (**Window > Package Manager**), click **+ > Add package by name...** and add:
 * `com.unity.entities`
 * `com.unity.entities.graphics`
 * `com.unity.burst`
 
-**2. Import the Asset**
-Import the GPU Animation Entities LITE package into your Unity project.
+### 📥 Install GPU Animation Entities LITE
+Choose one of the following methods:
 
-**3. Enable Burst Compilation**
+**Option A: Via Unity Package Manager (Git URL)**
+1. Open **Window > Package Manager**
+2. Click **+ > Add package from git URL...**
+3. Enter: `https://github.com/sniveler-code/GPU-Animation-Entities.git`
+4. Click **Add**
+
+**Option B: Via Unity Package Manager (Local Package)**
+1. Download/clone this repository
+2. In Package Manager, click **+ > Add package from disk...**
+3. Select the `package.json` file in the package root
+
+**Option C: Via scoped registry (if published to OpenUPM/npm)**
+1. Add scoped registry: `https://package.openupm.com`
+2. Scope: `com.sniveler-code`
+3. Install via Package Manager
+
+**Option D: Via Unity Asset Store (Recommended)**
+1. Open **Window > Package Manager**
+2. Click **Packages: In Project** → **Unity Asset Store**
+3. Search for "GPU Animation Entities" or visit the [Asset Store page](https://assetstore.unity.com/packages/slug/246164)
+4. Click **Download** → **Import**
+
+*This is the easiest method and ensures automatic updates via the Package Manager.*
+
+### ⚡ Enable Burst Compilation
 For maximum performance, ensure Burst is enabled.
 Go to **Jobs > Burst > Enable**.
-*(Ensure Safety Checks are turned off in production builds for optimal speed).*
+*(Ensure Safety Checks are turned off in production builds for optimal speed.)*
 
-**4. Verify URP Settings**
+### 🔍 Verify URP Settings
 Ensure your project is actively using a URP Asset (**Edit > Project Settings > Graphics**). The custom shaders provided in this package will only compile under URP.
 
 ---
