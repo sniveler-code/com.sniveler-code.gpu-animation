@@ -7,7 +7,7 @@ using Unity.Mathematics;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using AnimatorUtils = SnivelerCode.GpuAnimation.Runtime.Utils.AnimatorUtils;
+using RuntimeAnimatorUtils = SnivelerCode.GpuAnimation.Runtime.Utils.AnimatorUtils;
 
 namespace SnivelerCode.GpuAnimation.Editor
 {
@@ -18,9 +18,11 @@ namespace SnivelerCode.GpuAnimation.Editor
 
         static PrefabModeObserver()
         {
-            AnimatorUtils.InitDummyBuffer();
+            RuntimeAnimatorUtils.InitDummyBuffer();
             PrefabStage.prefabStageOpened += OnPrefabStageOpened;
             PrefabStage.prefabStageClosing += OnPrefabStageClosing;
+            AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
+            EditorApplication.quitting += OnEditorQuitting;
             AppDomain.CurrentDomain.DomainUnload += OnDomainUnload;
         }
 
@@ -47,15 +49,19 @@ namespace SnivelerCode.GpuAnimation.Editor
                 tempArrayLbs.Dispose();
 
                 if (_gpuBufferLbs == null || !_gpuBufferLbs.IsValid()) return;
-                Shader.SetGlobalBuffer(AnimatorUtils.AnimBufferLbs, _gpuBufferLbs);
+                Shader.SetGlobalBuffer(RuntimeAnimatorUtils.AnimBufferLbs, _gpuBufferLbs);
             }
         }
 
         private static void OnDomainUnload(object sender, EventArgs e) => Cleanup();
 
+        private static void OnBeforeAssemblyReload() => Cleanup();
+
+        private static void OnEditorQuitting() => Cleanup();
+
         private static void OnPrefabStageClosing(PrefabStage prefabStage)
         {
-            AnimatorUtils.SetDummyBuffer();
+            RuntimeAnimatorUtils.SetDummyBuffer();
 
             if (_gpuBufferLbs != null)
             {
@@ -89,7 +95,7 @@ namespace SnivelerCode.GpuAnimation.Editor
                 _gpuBufferLbs = null;
             }
 
-            AnimatorUtils.ReleaseDummyBuffer();
+            RuntimeAnimatorUtils.ReleaseDummyBuffer();
         }
     }
 }

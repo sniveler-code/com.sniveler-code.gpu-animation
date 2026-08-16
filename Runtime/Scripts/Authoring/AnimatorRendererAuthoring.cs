@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using SnivelerCode.GpuAnimation.Runtime.Components;
 using Unity.Collections;
@@ -8,8 +8,14 @@ using Hash128 = Unity.Entities.Hash128;
 
 namespace SnivelerCode.GpuAnimation.Runtime.Authoring
 {
+    /// <summary>
+    /// Authoring component for scene-level GPU animation configuration.
+    /// Placed on a GameObject in the scene (or subscene) to register baked matrix assets.
+    /// Creates a singleton <see cref="SceneAnimatorConfigData"/> entity with all bone matrices.
+    /// </summary>
     public sealed class AnimatorRendererAuthoring : MonoBehaviour
     {
+        /// <summary>Array of baked matrix assets to register for this scene.</summary>
         [SerializeField] private AnimatorMatricesAsset[] matrices;
 
         private sealed class SceneAnimatorBaker : Baker<AnimatorRendererAuthoring>
@@ -42,15 +48,15 @@ namespace SnivelerCode.GpuAnimation.Runtime.Authoring
                 uint currentOffsetLbs = 0;
                 for (int i = 0; i < validMatrices.Length; i++)
                 {
-                    var matrices = validMatrices[i];
-                    if(hashes.ContainsKey(matrices.UniqueId)) continue;
+                    var matricesAsset = validMatrices[i];
+                    if (hashes.ContainsKey(matricesAsset.UniqueId)) continue;
 
                     uint currentOffset = currentOffsetLbs;
                     offsets[i] = currentOffset;
-                    blobHashes[i] = matrices.UniqueId;
-                    hashes[matrices.UniqueId] = currentOffset;
+                    blobHashes[i] = matricesAsset.UniqueId;
+                    hashes[matricesAsset.UniqueId] = currentOffset;
 
-                    var src = matrices.MatricesLbs;
+                    var src = matricesAsset.MatricesLbs;
                     for (int m = 0; m < src.Length; m++)
                         lbsArray[(int) currentOffsetLbs + m] = src[m];
 

@@ -8,8 +8,9 @@ namespace SnivelerCode.GpuAnimation.Runtime.Utils
 {
     public static class AnimatorUtils
     {
-        public static readonly int AnimBufferLbs = Shader.PropertyToID("_SnivelerAnimBufferLBS");
-        public static readonly int AnimBufferState = Shader.PropertyToID("_SnivelerInstanceAnimState");
+        // Use centralized ShaderPropertyIDs
+        public static readonly int AnimBufferLbs = ShaderPropertyIDs.AnimBufferLBS;
+        public static readonly int AnimBufferState = ShaderPropertyIDs.AnimBufferState;
 
         private static readonly DummyBuffer _buffer = new();
 

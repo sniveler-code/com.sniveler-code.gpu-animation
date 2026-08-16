@@ -1,31 +1,32 @@
 ﻿using UnityEngine;
+using SnivelerCode.GpuAnimation.Runtime.Utils;
 
 namespace SnivelerCode.GpuAnimation.Editor.Utils
 {
     public static class AnimatorStrings
     {
-        public const string RenderFrames = "_SnivelerInstanceID";
         public const string LitTemplateName = "Sniveler_Lit_Template";
         public const string UnlitTemplateName = "Sniveler_Unlit_Template";
     }
 
     public static class AnimatorShaderProperty
     {
-        public static readonly int SurfaceId = Shader.PropertyToID("_Surface");
-        public static readonly int BlendId = Shader.PropertyToID("_Blend");
-        public static readonly int SrcBlendId = Shader.PropertyToID("_SrcBlend");
-        public static readonly int DstBlendId = Shader.PropertyToID("_DstBlend");
-        public static readonly int ZWriteId = Shader.PropertyToID("_ZWrite");
-        public static readonly int ZTestId = Shader.PropertyToID("_ZTest");
-        public static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
-        public static readonly int ColorId = Shader.PropertyToID("_Color");
+        // Use centralized ShaderPropertyIDs
+        public static readonly int SurfaceId = ShaderPropertyIDs.Surface;
+        public static readonly int BlendId = ShaderPropertyIDs.Blend;
+        public static readonly int SrcBlendId = ShaderPropertyIDs.SrcBlend;
+        public static readonly int DstBlendId = ShaderPropertyIDs.DstBlend;
+        public static readonly int ZWriteId = ShaderPropertyIDs.ZWrite;
+        public static readonly int ZTestId = ShaderPropertyIDs.ZTest;
+        public static readonly int BaseColorId = ShaderPropertyIDs.BaseColor;
+        public static readonly int ColorId = ShaderPropertyIDs.Color;
 
-        public static readonly int BaseMapId = Shader.PropertyToID("_BaseMap");
-        public static readonly int MainTexId = Shader.PropertyToID("_MainTex");
-        public static int InstanceID => Shader.PropertyToID(AnimatorStrings.RenderFrames);
+        public static readonly int BaseMapId = ShaderPropertyIDs.BaseMap;
+        public static readonly int MainTexId = ShaderPropertyIDs.MainTex;
+        public static readonly int InstanceID = ShaderPropertyIDs.InstanceID;
     }
 
-    public static class AnimatorUtils
+    public static class EditorAnimatorUtils
     {
 
         public static Material GetDebugMaterial()

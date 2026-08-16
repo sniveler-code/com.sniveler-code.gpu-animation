@@ -14,6 +14,10 @@ namespace SnivelerCode.GpuAnimation.Runtime.Utils
         public static void ErrorManaged(string message) => UnityEngine.Debug.LogError($"[SCGpuAnimator] {message}");
     }
 
+    /// <summary>
+    /// Stack-allocated log builder for Burst-compatible logging.
+    /// Uses FixedString512Bytes (inline storage) - no heap allocation.
+    /// </summary>
     public ref struct BurstLogBuilder
     {
         private FixedString512Bytes _buffer;

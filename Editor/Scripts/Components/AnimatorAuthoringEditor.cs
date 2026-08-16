@@ -5,7 +5,7 @@ using SnivelerCode.GpuAnimation.Runtime.Components;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using AnimatorUtils = SnivelerCode.GpuAnimation.Runtime.Utils.AnimatorUtils;
+using RuntimeAnimatorUtils = SnivelerCode.GpuAnimation.Runtime.Utils.AnimatorUtils;
 
 #if UNITY_EDITOR
 
@@ -54,7 +54,7 @@ namespace SnivelerCode.GpuAnimation.Editor.Components
 
                 if (mesh == null) continue;
 
-                _material ??= Utils.AnimatorUtils.GetDebugMaterial();
+                _material ??= EditorAnimatorUtils.GetDebugMaterial();
                 _material.SetPass(0);
 
                 GL.wireframe = true;
@@ -105,7 +105,7 @@ namespace SnivelerCode.GpuAnimation.Editor.Components
             uint boneCount = (uint) animator.BonesCount;
             uint frameOffset = (uint) (currentAnim.Start + _currentFrame * boneCount);
 
-            AnimatorUtils.SetDummyBuffer(new GpuInstanceAnimState
+            RuntimeAnimatorUtils.SetDummyBuffer(new GpuInstanceAnimState
             {
                 FrameA0 = frameOffset,
                 FrameA1 = frameOffset,

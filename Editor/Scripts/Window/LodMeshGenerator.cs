@@ -124,6 +124,16 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
                     if (!materialSet.ContainsKey(materialGuid))
                     {
                         var material = new Material(instance.Shader);
+
+                        // color
+                        if (sourceMaterial.HasProperty(AnimatorShaderProperty.BaseColorId))
+                            material.SetColor(AnimatorShaderProperty.BaseColorId,
+                                sourceMaterial.GetColor(AnimatorShaderProperty.BaseColorId));
+                        else if (sourceMaterial.HasProperty(AnimatorShaderProperty.ColorId))
+                            material.SetColor(AnimatorShaderProperty.ColorId,
+                                sourceMaterial.GetColor(AnimatorShaderProperty.ColorId));
+
+                        // texture
                         if (sourceMaterial.HasProperty(AnimatorShaderProperty.BaseMapId))
                             material.SetTexture(AnimatorShaderProperty.BaseMapId,
                                 sourceMaterial.GetTexture(AnimatorShaderProperty.BaseMapId));

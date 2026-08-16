@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 
 using System.Collections.Generic;
 using System.Linq;
@@ -12,19 +12,22 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
     {
         public int Percent;
         public SkinnedMeshRenderer[] Skins;
-
-        public enum Quality
-        {
-            Bones4,
-            Bones2,
-            Bones1
-        }
     }
 
     public sealed class ClipInstance
     {
         public bool Enable;
-        public int Fps;
+        private int _fps = 60;
+        public int Fps
+        {
+            get => _fps;
+            set
+            {
+                if (value > 255)
+                    Debug.LogWarning($"[GPU Animation] FPS clamped from {value} to 255 (byte limit)");
+                _fps = Mathf.Clamp(value, 1, 255);
+            }
+        }
         public float Speed;
         public string StateName;
     }
@@ -41,7 +44,6 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
 
         private readonly Dictionary<string, int> _bonesMap = new();
         public readonly List<LodInstance> Lods = new();
-        public readonly List<string> Bones = new();
         public readonly List<ClipInstance> Clips = new();
         public readonly List<MonoBlobAnimatorParameter> Parameters = new();
 
@@ -74,7 +76,6 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
             _bonesMap.Clear();
             Lods.Clear();
             Clips.Clear();
-            Bones.Clear();
             MasterBones = null;
             MasterBindposes = null;
         }
@@ -148,17 +149,6 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
         {
             Lods.Add(new LodInstance {Percent = (int) (Lods[^1].Percent * 0.5f)});
             return Lods[^1];
-        }
-
-        public string AddBone()
-        {
-            if (MasterBones is not {Length: > 0})
-            {
-                return string.Empty;
-            }
-
-            Bones.Add(MasterBones[0].name);
-            return MasterBones[0].name;
         }
     }
 }

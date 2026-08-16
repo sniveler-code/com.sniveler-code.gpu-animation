@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SnivelerCode.GpuAnimation.Runtime.Authoring;
 using SnivelerCode.GpuAnimation.Runtime.Components;
-using SnivelerCode.GpuAnimation.Runtime.Utils;
+using RuntimeAnimatorUtils = SnivelerCode.GpuAnimation.Runtime.Utils.AnimatorUtils;
 using Unity.Entities;
 using Unity.Scenes;
 using UnityEditor;
@@ -50,6 +50,7 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
         public async Task GenerateAnimationAsset(PrefabInstance instance)
         {
             AnimationBakeResult bakeResult = default;
+            GameObject rootObject = null;
             try
             {
                 if (instance.Source == null) return;
@@ -78,7 +79,7 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
                 _fileSystem.ForceDirectory(folderResources);
 
                 // 1. Bake Animations and Bones
-                AnimatorUtils.SetDummyBuffer();
+                RuntimeAnimatorUtils.SetDummyBuffer();
                 bakeResult = _baker.BakeAnimations(instance);
 
                 List<MonoBlobAnimator> animations = bakeResult.Animations;
@@ -115,7 +116,7 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
                     .IndexOf(stateMachine.defaultState.name);
 
                 // 5. Build LOD Mesh and Prefab
-                GameObject rootObject = _lodMeshGenerator.BuildLodMeshProcess(instance, prefabsFolder);
+                rootObject = _lodMeshGenerator.BuildLodMeshProcess(instance, prefabsFolder);
                 var animatorComponent = rootObject.AddComponent<AnimatorAuthoring>();
                 animatorComponent.BonesCount = bakedBones.BonesNames.Count;
                 animatorComponent.Matrices = bufferAsset;
@@ -126,6 +127,7 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
                 string prefabPath = Path.Combine(prefabsFolder, $"{instance.Name}.prefab");
                 PrefabUtility.SaveAsPrefabAsset(rootObject, prefabPath);
                 Object.DestroyImmediate(rootObject);
+                rootObject = null;
             }
             catch (Exception e)
             {
@@ -134,6 +136,9 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
             }
             finally
             {
+                // Cleanup any leaked temporary objects
+                if (rootObject != null) Object.DestroyImmediate(rootObject);
+
                 if (bakeResult.Errors?.Count > 0)
                 {
                     EditorUtility.DisplayDialog(

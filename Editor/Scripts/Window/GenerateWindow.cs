@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SnivelerCode.GpuAnimation.Editor.Utils;
+using SnivelerCode.GpuAnimation.Runtime.Utils;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEditor.UIElements;
@@ -315,9 +316,6 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
             {
                 RenderLodElement(_instance.Lods[i], i, lodsContent);
             }
-
-            // bones
-            _instance.Bones.Clear();
         }
 
         private void ShowConfirm(string message, Action onConfirm)
@@ -329,7 +327,7 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
 
         private static bool IsAnimationNodeUsed(Shader shader)
         {
-            if (shader.FindPropertyIndex(AnimatorStrings.RenderFrames) == -1) return false;
+            if (shader.FindPropertyIndex(ShaderPropertyIDs.Str_InstanceID) == -1) return false;
             return true;
         }
 
@@ -344,10 +342,7 @@ namespace SnivelerCode.GpuAnimation.Editor.Window
             percentField.value = lodInstance.Percent;
             percentField.RegisterValueChangedCallback(evt => lodInstance.Percent = evt.newValue);
 
-            string[] qualityNames = Enum.GetNames(typeof(LodInstance.Quality));
             var dropdown = lodTemplate.Q<DropdownField>("Quality");
-            dropdown.choices = qualityNames.ToList();
-            dropdown.value = qualityNames[0];
             dropdown.SetEnabled(false);
             dropdown.tooltip = "Pro Version required";
 
